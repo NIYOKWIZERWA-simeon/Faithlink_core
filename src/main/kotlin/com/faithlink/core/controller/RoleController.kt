@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -19,12 +20,14 @@ class RoleController(
 ) {
     
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     fun createRole(@Valid @RequestBody role: Role): ResponseEntity<Role> {
         val createdRole = roleService.createRole(role)
         return ResponseEntity.status(HttpStatus.CREATED).body(createdRole)
     }
     
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     fun getRoleById(@PathVariable id: Long): ResponseEntity<Role> {
         return roleService.getRoleById(id)
             .map { role -> ResponseEntity.ok(role) }
@@ -32,6 +35,7 @@ class RoleController(
     }
     
     @GetMapping("/name/{name}")
+    @PreAuthorize("hasRole('ADMIN')")
     fun getRoleByName(@PathVariable name: String): ResponseEntity<Role> {
         return roleService.getRoleByName(name)
             .map { role -> ResponseEntity.ok(role) }
@@ -39,6 +43,7 @@ class RoleController(
     }
     
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     fun getAllRoles(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
@@ -58,12 +63,14 @@ class RoleController(
     }
     
     @GetMapping("/search")
+    @PreAuthorize("hasRole('ADMIN')")
     fun searchRoles(@RequestParam name: String): ResponseEntity<List<Role>> {
         val roles = roleService.searchRolesByName(name)
         return ResponseEntity.ok(roles)
     }
     
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     fun updateRole(
         @PathVariable id: Long,
         @Valid @RequestBody updatedRole: Role
@@ -74,6 +81,7 @@ class RoleController(
     }
     
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     fun deleteRole(@PathVariable id: Long): ResponseEntity<Void> {
         return if (roleService.deleteRole(id)) {
             ResponseEntity.noContent().build()

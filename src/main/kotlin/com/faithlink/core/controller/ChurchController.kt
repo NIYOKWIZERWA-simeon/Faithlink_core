@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -19,12 +20,14 @@ class ChurchController(
 ) {
     
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'CHURCH_MANAGER')")
     fun createChurch(@Valid @RequestBody church: Church): ResponseEntity<Church> {
         val createdChurch = churchService.createChurch(church)
         return ResponseEntity.status(HttpStatus.CREATED).body(createdChurch)
     }
     
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CHURCH_MANAGER')")
     fun getChurchById(@PathVariable id: Long): ResponseEntity<Church> {
         return churchService.getChurchById(id)
             .map { church -> ResponseEntity.ok(church) }
@@ -32,6 +35,7 @@ class ChurchController(
     }
     
     @GetMapping("/name/{name}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CHURCH_MANAGER')")
     fun getChurchByName(@PathVariable name: String): ResponseEntity<Church> {
         return churchService.getChurchByName(name)
             .map { church -> ResponseEntity.ok(church) }
@@ -39,6 +43,7 @@ class ChurchController(
     }
     
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'CHURCH_MANAGER')")
     fun getAllChurches(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "10") size: Int,
@@ -64,6 +69,7 @@ class ChurchController(
     }
     
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CHURCH_MANAGER')")
     fun updateChurch(
         @PathVariable id: Long,
         @Valid @RequestBody updatedChurch: Church
@@ -74,6 +80,7 @@ class ChurchController(
     }
     
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     fun deleteChurch(@PathVariable id: Long): ResponseEntity<Void> {
         return if (churchService.deleteChurch(id)) {
             ResponseEntity.noContent().build()
@@ -83,6 +90,7 @@ class ChurchController(
     }
     
     @PatchMapping("/{id}/deactivate")
+    @PreAuthorize("hasRole('ADMIN')")
     fun softDeleteChurch(@PathVariable id: Long): ResponseEntity<Void> {
         return if (churchService.softDeleteChurch(id)) {
             ResponseEntity.noContent().build()

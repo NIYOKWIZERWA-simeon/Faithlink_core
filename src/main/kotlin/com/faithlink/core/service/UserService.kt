@@ -89,4 +89,11 @@ class UserService(
     fun countActiveUsers(): Long {
         return userRepository.countActiveUsers()
     }
+    
+    @Transactional(readOnly = true)
+    fun isOwner(userId: Long, email: String): Boolean {
+        return userRepository.findById(userId)
+            .map { user -> user.email == email }
+            .orElse(false)
+    }
 }
