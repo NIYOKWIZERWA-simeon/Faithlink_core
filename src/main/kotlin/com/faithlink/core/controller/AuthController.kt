@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/auth")
@@ -56,7 +57,15 @@ class AuthController(
         @Valid @RequestBody updateUserRequest: com.faithlink.core.dto.UserUpdateRequest
     ): ResponseEntity<User> {
         val currentUser = authService.getCurrentUser(userDetails.username)
-        val updatedUser = userService.updateUser(currentUser.id!!, updateUserRequest)
+        val dummyUser = User(
+            firstName = updateUserRequest.firstName,
+            lastName = updateUserRequest.lastName,
+            email = updateUserRequest.email,
+            phone = updateUserRequest.phone,
+            password = "",
+            isActive = updateUserRequest.isActive
+        )
+        val updatedUser = userService.updateUser(currentUser.id!!, dummyUser)
         return updatedUser.map { ResponseEntity.ok(it) }
             .orElse(ResponseEntity.notFound().build())
     }

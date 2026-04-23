@@ -5,13 +5,14 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Entity
 @Table(name = "churches")
 data class Church(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    @GeneratedValue(strategy = GenerationType.UUID)
+    val id: UUID? = null,
     
     @NotBlank(message = "Church name is required")
     @Size(max = 100, message = "Church name must not exceed 100 characters")

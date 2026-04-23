@@ -8,8 +8,11 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface UserRepository : JpaRepository<User, Long> {
+interface UserRepository : JpaRepository<User, UUID> {
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = ["roles", "church"])
     fun findByEmail(email: String): Optional<User>
+
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = ["roles", "church"])
     fun findByEmailIgnoreCase(email: String): Optional<User>
     fun existsByEmail(email: String): Boolean
     fun findByFirstNameContainingIgnoreCase(firstName: String): List<User>
@@ -20,6 +23,9 @@ interface UserRepository : JpaRepository<User, Long> {
     
     @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = :roleName")
     fun findByRoleName(@Param("roleName") roleName: String): List<User>
+    
+    @Query("SELECT u FROM User u WHERE u.church.id = :churchId")
+    fun findByChurchId(@Param("churchId") churchId: UUID): List<User>
     
     @Query("SELECT COUNT(u) FROM User u WHERE u.isActive = true")
     fun countActiveUsers(): Long

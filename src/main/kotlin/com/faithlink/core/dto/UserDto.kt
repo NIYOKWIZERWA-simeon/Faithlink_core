@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
+import java.util.UUID
 
 data class UserCreateRequest(
     @field:NotBlank(message = "First name is required")
@@ -25,7 +26,9 @@ data class UserCreateRequest(
     @field:Size(max = 20, message = "Phone must not exceed 20 characters")
     val phone: String? = null,
     
-    val roleIds: Set<Long> = emptySet()
+    val churchId: UUID? = null,
+    
+    val roleIds: Set<UUID> = emptySet()
 )
 
 data class UserUpdateRequest(
@@ -46,16 +49,19 @@ data class UserUpdateRequest(
     
     val isActive: Boolean = true,
     
-    val roleIds: Set<Long> = emptySet()
+    val churchId: UUID? = null,
+    
+    val roleIds: Set<UUID> = emptySet()
 )
 
 data class UserResponse(
-    val id: Long,
+    val id: UUID,
     val firstName: String,
     val lastName: String,
     val email: String,
     val phone: String?,
     val isActive: Boolean,
+    val churchId: UUID?,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
     val roles: Set<RoleResponse>
@@ -69,6 +75,7 @@ data class UserResponse(
                 email = user.email,
                 phone = user.phone,
                 isActive = user.isActive,
+                churchId = user.church?.id,
                 createdAt = user.createdAt,
                 updatedAt = user.updatedAt,
                 roles = user.roles.map { RoleResponse.from(it) }.toSet()
@@ -78,11 +85,13 @@ data class UserResponse(
 }
 
 data class UserSummary(
-    val id: Long,
+    val id: UUID,
     val firstName: String,
     val lastName: String,
     val email: String,
-    val isActive: Boolean
+    val isActive: Boolean,
+    val roles: List<String>,
+    val churchId: UUID?
 ) {
     companion object {
         fun from(user: com.faithlink.core.entity.User): UserSummary {
@@ -91,7 +100,9 @@ data class UserSummary(
                 firstName = user.firstName,
                 lastName = user.lastName,
                 email = user.email,
-                isActive = user.isActive
+                isActive = user.isActive,
+                roles = user.roles.map { it.name },
+                churchId = user.church?.id
             )
         }
     }

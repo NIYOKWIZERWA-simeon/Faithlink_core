@@ -22,7 +22,7 @@ class RoleService(
     }
     
     @Transactional(readOnly = true)
-    fun getRoleById(id: Long): Optional<Role> {
+    fun getRoleById(id: UUID): Optional<Role> {
         return roleRepository.findById(id)
     }
     
@@ -41,7 +41,7 @@ class RoleService(
         return roleRepository.findAll()
     }
     
-    fun updateRole(id: Long, updatedRole: Role): Optional<Role> {
+    fun updateRole(id: UUID, updatedRole: Role): Optional<Role> {
         return roleRepository.findById(id).map { existingRole ->
             val roleToUpdate = existingRole.copy(
                 name = updatedRole.name,
@@ -51,7 +51,7 @@ class RoleService(
         }
     }
     
-    fun deleteRole(id: Long): Boolean {
+    fun deleteRole(id: UUID): Boolean {
         return if (roleRepository.existsById(id)) {
             roleRepository.deleteById(id)
             true

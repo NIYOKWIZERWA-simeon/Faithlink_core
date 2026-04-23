@@ -5,13 +5,14 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Entity
 @Table(name = "users")
 data class User(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    @GeneratedValue(strategy = GenerationType.UUID)
+    val id: UUID? = null,
     
     @NotBlank(message = "First name is required")
     @Size(max = 50, message = "First name must not exceed 50 characters")
@@ -39,6 +40,10 @@ data class User(
     @Column(name = "is_active")
     val isActive: Boolean = true,
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "church_id")
+    var church: Church? = null,
+    
     @Column(name = "created_at")
     val createdAt: LocalDateTime = LocalDateTime.now(),
     
@@ -51,7 +56,7 @@ data class User(
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "role_id")]
     )
-    val roles: Set<Role> = emptySet()
+    var roles: MutableSet<Role> = mutableSetOf()
 ) {
     @PreUpdate
     fun preUpdate() {

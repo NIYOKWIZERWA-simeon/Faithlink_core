@@ -3,13 +3,14 @@ package com.faithlink.core.entity
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
+import java.util.UUID
 
 @Entity
 @Table(name = "roles")
 data class Role(
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    @GeneratedValue(strategy = GenerationType.UUID)
+    val id: UUID? = null,
     
     @NotBlank(message = "Role name is required")
     @Size(max = 50, message = "Role name must not exceed 50 characters")

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaithLink Core - Welcome</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .hero-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+        }
+        .hero-title {
+            color: #2c3e50;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+        .btn-primary-custom {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        .btn-outline-custom {
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px;
+            background: transparent;
+        }
+        .btn-outline-custom:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .feature-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .status-badge {
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="status-badge">
+            <i class="fas fa-circle"></i> System Online
+        </div>
+        
+        <div class="feature-icon">
+            <i class="fas fa-church"></i>
+        </div>
+        
+        <h1 class="hero-title">FaithLink Core</h1>
+        <p class="hero-subtitle">Church Management System - Connecting Faith Communities</p>
+        
+        <div class="mt-4">
+            <a href="/login" class="btn btn-primary-custom text-decoration-none">
+                <i class="fas fa-sign-in-alt me-2"></i> Login to System
+            </a>
+            <a href="#features" class="btn btn-outline-custom text-decoration-none" onclick="showFeatures()">
+                <i class="fas fa-info-circle me-2"></i> Learn More
+            </a>
+        </div>
+        
+        <div id="features" class="mt-5" style="display: none;">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <i class="fas fa-layer-group feature-icon" style="font-size: 2rem;"></i>
+                    <h6>Church Groups</h6>
+                    <p class="text-muted small">Manage cell groups and ministries</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <i class="fas fa-hands-praying feature-icon" style="font-size: 2rem;"></i>
+                    <h6>Prayer Wall</h6>
+                    <p class="text-muted small">Connect with your community in prayer</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <i class="fas fa-microphone-alt feature-icon" style="font-size: 2rem;"></i>
+                    <h6>Sermon Archive</h6>
+                    <p class="text-muted small">Access spiritual digital content</p>
+                </div>
+            </div>
+            <div class="mt-3 p-3 bg-light rounded shadow-sm">
+                <p class="small text-muted mb-0"><i class="fas fa-shield-halved me-2 text-primary"></i>Powered by UUID Architecture for Offline-First Sync</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showFeatures() {
+            const features = document.getElementById('features');
+            features.style.display = features.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        // Check API status on page load
+        window.onload = function() {
+            fetch('/public/health')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('API Status:', data);
+                    const badge = document.querySelector('.status-badge');
+                    badge.innerHTML = '<i class="fas fa-circle"></i> ' + data.message;
+                    badge.style.background = '#28a745';
+                })
+                .catch(error => {
+                    console.error('API Error:', error);
+                    const badge = document.querySelector('.status-badge');
+                    badge.innerHTML = '<i class="fas fa-circle"></i> System Offline';
+                    badge.style.background = '#dc3545';
+                });
+        }
+    </script>
+</body>
+</html>

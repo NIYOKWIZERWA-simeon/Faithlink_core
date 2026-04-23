@@ -11,10 +11,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/roles")
-@CrossOrigin(origins = ["*"])
 class RoleController(
     private val roleService: RoleService
 ) {
@@ -28,7 +28,7 @@ class RoleController(
     
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    fun getRoleById(@PathVariable id: Long): ResponseEntity<Role> {
+    fun getRoleById(@PathVariable id: UUID): ResponseEntity<Role> {
         return roleService.getRoleById(id)
             .map { role -> ResponseEntity.ok(role) }
             .orElse(ResponseEntity.notFound().build())
@@ -72,7 +72,7 @@ class RoleController(
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     fun updateRole(
-        @PathVariable id: Long,
+        @PathVariable id: UUID,
         @Valid @RequestBody updatedRole: Role
     ): ResponseEntity<Role> {
         return roleService.updateRole(id, updatedRole)
@@ -82,7 +82,7 @@ class RoleController(
     
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    fun deleteRole(@PathVariable id: Long): ResponseEntity<Void> {
+    fun deleteRole(@PathVariable id: UUID): ResponseEntity<Void> {
         return if (roleService.deleteRole(id)) {
             ResponseEntity.noContent().build()
         } else {

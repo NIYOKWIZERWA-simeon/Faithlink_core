@@ -2,6 +2,7 @@ package com.faithlink.core.dto
 
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
+import java.util.UUID
 
 data class RoleCreateRequest(
     @field:NotBlank(message = "Role name is required")
@@ -22,7 +23,7 @@ data class RoleUpdateRequest(
 )
 
 data class RoleResponse(
-    val id: Long,
+    val id: UUID,
     val name: String,
     val description: String?
 ) {

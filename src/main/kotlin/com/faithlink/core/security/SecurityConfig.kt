@@ -31,38 +31,41 @@ class SecurityConfig(
             .authorizeHttpRequests { authorize ->
                 authorize
                     // Public endpoints
+                    .requestMatchers("/", "/index.html", "/login", "/login.html", "/dashboard", "/dashboard.html", "/test-login.html").permitAll()
                     .requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers("/api/roles/all").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/roles").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/churches").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/churches/active").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/churches/search").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/churches/stats/count").permitAll()
                     .requestMatchers("/h2-console/**").permitAll()
                     .requestMatchers("/error").permitAll()
-                    // Admin endpoints
+                    
+                    // Church & Role discovery (Public-ish)
+                    .requestMatchers(HttpMethod.GET, "/api/churches/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/roles/**").permitAll()
+                    
+                    // Prayer Requests: Members can submit, but only authorized can see all
+                    .requestMatchers(HttpMethod.POST, "/api/prayer-requests").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/api/prayer-requests/public").permitAll()
+                    .requestMatchers("/api/prayer-requests/**").hasAnyRole("ADMIN", "PASTOR")
+                    
+                    // Sermons & Announcements: Publicly viewable
+                    .requestMatchers(HttpMethod.GET, "/api/sermons/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/announcements/**").permitAll()
+                    
+                    // Finance & Donations
+                    .requestMatchers(HttpMethod.POST, "/api/donations").authenticated()
+                    .requestMatchers("/api/donations/my-donations").authenticated()
+                    .requestMatchers("/api/donations/**").hasAnyRole("ADMIN", "TREASURER")
+                    
+                    // Sync & Offline-First
+                    .requestMatchers("/api/sync/**").authenticated()
+                    
+                    // Group Management
+                    .requestMatchers(HttpMethod.GET, "/api/groups/**").authenticated()
                     .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                    // Protected endpoints
-                    .requestMatchers(HttpMethod.POST, "/api/users").hasAnyRole("ADMIN", "USER_MANAGER")
-                    .requestMatchers(HttpMethod.PUT, "/api/users/**").hasAnyRole("ADMIN", "USER_MANAGER")
-                    .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PATCH, "/api/users/**/deactivate").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.POST, "/api/roles").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/api/roles/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/api/roles/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.POST, "/api/churches").hasAnyRole("ADMIN", "CHURCH_MANAGER")
-                    .requestMatchers(HttpMethod.PUT, "/api/churches/**").hasAnyRole("ADMIN", "CHURCH_MANAGER")
-                    .requestMatchers(HttpMethod.DELETE, "/api/churches/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PATCH, "/api/churches/**/deactivate").hasRole("ADMIN")
-                    // User profile endpoints (authenticated users)
-                    .requestMatchers(HttpMethod.GET, "/api/users/profile").authenticated()
-                    .requestMatchers(HttpMethod.PUT, "/api/users/profile").authenticated()
-                    .requestMatchers(HttpMethod.PUT, "/api/users/password").authenticated()
-                    // All other requests need authentication
+                    
+                    // Default protection
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
-            .headers { it.frameOptions { it.disable() } } // For H2 console
+            .headers { it.frameOptions { it.disable() } }
             .build()
     }
     

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface RoleRepository : JpaRepository<Role, Long> {
+interface RoleRepository : JpaRepository<Role, UUID> {
     fun findByName(name: String): Optional<Role>
     fun findByNameIgnoreCase(name: String): Optional<Role>
     fun existsByName(name: String): Boolean

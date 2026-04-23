@@ -31,7 +31,9 @@ data class RegisterRequest(
     val password: String,
     
     @field:Size(max = 20, message = "Phone must not exceed 20 characters")
-    val phone: String? = null
+    val phone: String? = null,
+    
+    val churchId: java.util.UUID? = null
 )
 
 data class AuthResponse(

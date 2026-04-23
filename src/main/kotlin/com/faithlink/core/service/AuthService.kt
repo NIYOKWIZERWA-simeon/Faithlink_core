@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Service
 @Transactional
@@ -27,6 +28,7 @@ class AuthService(
     private val authenticationManager: AuthenticationManager,
     private val userRepository: UserRepository,
     private val roleRepository: RoleRepository,
+    private val churchRepository: com.faithlink.core.repository.ChurchRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtUtil: JwtUtil
 ) {
@@ -37,21 +39,27 @@ class AuthService(
             throw DuplicateResourceException("User with email ${registerRequest.email} already exists")
         }
         
-        // Get or create default USER role
-        val userRole = roleRepository.findByNameIgnoreCase("USER")
+        // Get or create default MEMBER role
+        val userRole = roleRepository.findByNameIgnoreCase("ROLE_MEMBER")
             .orElseGet {
-                roleRepository.save(Role(name = "USER", description = "Regular user role"))
+                roleRepository.save(Role(name = "ROLE_MEMBER", description = "Regular member role"))
             }
+
+        // Get church context
+        val church = registerRequest.churchId?.let { 
+            churchRepository.findById(it).orElse(null) 
+        }
         
         // Create new user
         val user = User(
             firstName = registerRequest.firstName,
             lastName = registerRequest.lastName,
             email = registerRequest.email,
-            password = passwordEncoder.encode(registerRequest.password),
+            password = passwordEncoder.encode(registerRequest.password) ?: "",
             phone = registerRequest.phone,
             isActive = true,
-            roles = setOf(userRole)
+            church = church,
+            roles = mutableSetOf(userRole)
         )
         
         val savedUser = userRepository.save(user)
@@ -87,6 +95,8 @@ class AuthService(
                 user = com.faithlink.core.dto.UserSummary.from(user)
             )
         } catch (e: Exception) {
+            println("AUTH ERROR: ${e.message}")
+            e.printStackTrace()
             throw AuthenticationException("Invalid email or password")
         }
     }
@@ -105,7 +115,7 @@ class AuthService(
         )
     }
     
-    fun changePassword(userId: Long, changePasswordRequest: ChangePasswordRequest) {
+    fun changePassword(userId: UUID, changePasswordRequest: ChangePasswordRequest) {
         val user = userRepository.findById(userId)
             .orElseThrow { UsernameNotFoundException("User not found") }
         
@@ -121,7 +131,7 @@ class AuthService(
         
         // Update password
         val updatedUser = user.copy(
-            password = passwordEncoder.encode(changePasswordRequest.newPassword),
+            password = passwordEncoder.encode(changePasswordRequest.newPassword) ?: "",
             updatedAt = LocalDateTime.now()
         )
         

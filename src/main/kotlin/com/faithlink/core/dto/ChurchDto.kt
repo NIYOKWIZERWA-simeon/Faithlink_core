@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
+import java.util.UUID
 
 data class ChurchCreateRequest(
     @field:NotBlank(message = "Church name is required")
@@ -52,7 +53,7 @@ data class ChurchUpdateRequest(
 )
 
 data class ChurchResponse(
-    val id: Long,
+    val id: UUID,
     val name: String,
     val address: String?,
     val phone: String?,
@@ -82,7 +83,7 @@ data class ChurchResponse(
 }
 
 data class ChurchSummary(
-    val id: Long,
+    val id: UUID,
     val name: String,
     val email: String?,
     val phone: String?,

@@ -22,7 +22,7 @@ class ChurchService(
     }
     
     @Transactional(readOnly = true)
-    fun getChurchById(id: Long): Optional<Church> {
+    fun getChurchById(id: UUID): Optional<Church> {
         return churchRepository.findById(id)
     }
     
@@ -41,7 +41,7 @@ class ChurchService(
         return churchRepository.findActiveChurches()
     }
     
-    fun updateChurch(id: Long, updatedChurch: Church): Optional<Church> {
+    fun updateChurch(id: UUID, updatedChurch: Church): Optional<Church> {
         return churchRepository.findById(id).map { existingChurch ->
             val churchToUpdate = existingChurch.copy(
                 name = updatedChurch.name,
@@ -56,7 +56,7 @@ class ChurchService(
         }
     }
     
-    fun deleteChurch(id: Long): Boolean {
+    fun deleteChurch(id: UUID): Boolean {
         return if (churchRepository.existsById(id)) {
             churchRepository.deleteById(id)
             true
@@ -65,7 +65,7 @@ class ChurchService(
         }
     }
     
-    fun softDeleteChurch(id: Long): Boolean {
+    fun softDeleteChurch(id: UUID): Boolean {
         return churchRepository.findById(id).map { church ->
             val deactivatedChurch = church.copy(isActive = false)
             churchRepository.save(deactivatedChurch)

@@ -33,7 +33,10 @@ class JwtAuthenticationFilter(
         if (username != null && SecurityContextHolder.getContext().authentication == null) {
             if (jwtUtil.validateToken(jwt!!)) {
                 val roles = jwtUtil.extractRoles(jwt)
-                val authorities = roles.map { SimpleGrantedAuthority("ROLE_$it") }
+                val authorities = roles.map { role ->
+                    val authority = if (role.startsWith("ROLE_")) role else "ROLE_$role"
+                    SimpleGrantedAuthority(authority)
+                }
                 
                 val usernamePasswordAuthenticationToken = UsernamePasswordAuthenticationToken(
                     username,

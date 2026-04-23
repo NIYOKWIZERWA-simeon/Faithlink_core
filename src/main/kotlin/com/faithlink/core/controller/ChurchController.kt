@@ -11,10 +11,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/churches")
-@CrossOrigin(origins = ["*"])
 class ChurchController(
     private val churchService: ChurchService
 ) {
@@ -28,7 +28,7 @@ class ChurchController(
     
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CHURCH_MANAGER')")
-    fun getChurchById(@PathVariable id: Long): ResponseEntity<Church> {
+    fun getChurchById(@PathVariable id: UUID): ResponseEntity<Church> {
         return churchService.getChurchById(id)
             .map { church -> ResponseEntity.ok(church) }
             .orElse(ResponseEntity.notFound().build())
@@ -71,7 +71,7 @@ class ChurchController(
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CHURCH_MANAGER')")
     fun updateChurch(
-        @PathVariable id: Long,
+        @PathVariable id: UUID,
         @Valid @RequestBody updatedChurch: Church
     ): ResponseEntity<Church> {
         return churchService.updateChurch(id, updatedChurch)
@@ -81,7 +81,7 @@ class ChurchController(
     
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    fun deleteChurch(@PathVariable id: Long): ResponseEntity<Void> {
+    fun deleteChurch(@PathVariable id: UUID): ResponseEntity<Void> {
         return if (churchService.deleteChurch(id)) {
             ResponseEntity.noContent().build()
         } else {
@@ -91,7 +91,7 @@ class ChurchController(
     
     @PatchMapping("/{id}/deactivate")
     @PreAuthorize("hasRole('ADMIN')")
-    fun softDeleteChurch(@PathVariable id: Long): ResponseEntity<Void> {
+    fun softDeleteChurch(@PathVariable id: UUID): ResponseEntity<Void> {
         return if (churchService.softDeleteChurch(id)) {
             ResponseEntity.noContent().build()
         } else {

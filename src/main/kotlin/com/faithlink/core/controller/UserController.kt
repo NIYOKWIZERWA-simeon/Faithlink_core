@@ -10,13 +10,11 @@ import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
+import java.util.UUID
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = ["*"])
 class UserController(
     private val userService: UserService
 ) {
@@ -30,12 +28,19 @@ class UserController(
     
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER_MANAGER') or @userService.isOwner(#id, authentication.name)")
-    fun getUserById(@PathVariable id: Long): ResponseEntity<User> {
+    fun getUserById(@PathVariable id: UUID): ResponseEntity<User> {
         return userService.getUserById(id)
             .map { user -> ResponseEntity.ok(user) }
             .orElse(ResponseEntity.notFound().build())
     }
     
+    @GetMapping("/church/{churchId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'PASTOR')")
+    fun getUsersByChurch(@PathVariable churchId: UUID): ResponseEntity<List<User>> {
+        val users = userService.getUsersByChurch(churchId)
+        return ResponseEntity.ok(users)
+    }
+
     @GetMapping("/email/{email}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER_MANAGER') or authentication.name == #email")
     fun getUserByEmail(@PathVariable email: String): ResponseEntity<User> {
@@ -65,20 +70,10 @@ class UserController(
         return ResponseEntity.ok(users)
     }
     
-    @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER_MANAGER')")
-    fun searchUsers(
-        @RequestParam(required = false) firstName: String?,
-        @RequestParam(required = false) lastName: String?
-    ): ResponseEntity<List<User>> {
-        val users = userService.searchUsersByName(firstName, lastName)
-        return ResponseEntity.ok(users)
-    }
-    
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER_MANAGER') or @userService.isOwner(#id, authentication.name)")
     fun updateUser(
-        @PathVariable id: Long,
+        @PathVariable id: UUID,
         @Valid @RequestBody updatedUser: User
     ): ResponseEntity<User> {
         return userService.updateUser(id, updatedUser)
@@ -88,7 +83,7 @@ class UserController(
     
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    fun deleteUser(@PathVariable id: Long): ResponseEntity<Void> {
+    fun deleteUser(@PathVariable id: UUID): ResponseEntity<Void> {
         return if (userService.deleteUser(id)) {
             ResponseEntity.noContent().build()
         } else {
@@ -98,18 +93,11 @@ class UserController(
     
     @PatchMapping("/{id}/deactivate")
     @PreAuthorize("hasRole('ADMIN')")
-    fun softDeleteUser(@PathVariable id: Long): ResponseEntity<Void> {
+    fun softDeleteUser(@PathVariable id: UUID): ResponseEntity<Void> {
         return if (userService.softDeleteUser(id)) {
             ResponseEntity.noContent().build()
         } else {
             ResponseEntity.notFound().build()
         }
-    }
-    
-    @GetMapping("/stats/count")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER_MANAGER')")
-    fun getActiveUsersCount(): ResponseEntity<Map<String, Long>> {
-        val count = userService.countActiveUsers()
-        return ResponseEntity.ok(mapOf("activeUsers" to count))
     }
 }

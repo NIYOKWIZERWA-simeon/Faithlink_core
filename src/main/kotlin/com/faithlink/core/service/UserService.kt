@@ -22,7 +22,7 @@ class UserService(
     }
     
     @Transactional(readOnly = true)
-    fun getUserById(id: Long): Optional<User> {
+    fun getUserById(id: UUID): Optional<User> {
         return userRepository.findById(id)
     }
     
@@ -41,20 +41,26 @@ class UserService(
         return userRepository.findActiveUsers()
     }
     
-    fun updateUser(id: Long, updatedUser: User): Optional<User> {
+    @Transactional(readOnly = true)
+    fun getUsersByChurch(churchId: UUID): List<User> {
+        return userRepository.findByChurchId(churchId)
+    }
+    
+    fun updateUser(id: UUID, updatedUser: User): Optional<User> {
         return userRepository.findById(id).map { existingUser ->
             val userToUpdate = existingUser.copy(
                 firstName = updatedUser.firstName,
                 lastName = updatedUser.lastName,
                 email = updatedUser.email,
                 phone = updatedUser.phone,
-                isActive = updatedUser.isActive
+                isActive = updatedUser.isActive,
+                church = updatedUser.church ?: existingUser.church
             )
             userRepository.save(userToUpdate)
         }
     }
     
-    fun deleteUser(id: Long): Boolean {
+    fun deleteUser(id: UUID): Boolean {
         return if (userRepository.existsById(id)) {
             userRepository.deleteById(id)
             true
@@ -63,7 +69,7 @@ class UserService(
         }
     }
     
-    fun softDeleteUser(id: Long): Boolean {
+    fun softDeleteUser(id: UUID): Boolean {
         return userRepository.findById(id).map { user ->
             val deactivatedUser = user.copy(isActive = false)
             userRepository.save(deactivatedUser)
@@ -91,7 +97,7 @@ class UserService(
     }
     
     @Transactional(readOnly = true)
-    fun isOwner(userId: Long, email: String): Boolean {
+    fun isOwner(userId: UUID, email: String): Boolean {
         return userRepository.findById(userId)
             .map { user -> user.email == email }
             .orElse(false)

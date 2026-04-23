@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - FaithLink Core</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-bg: #f8f9fa;
+            --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            --accent-color: #764ba2;
+        }
+        body {
+            background: var(--secondary-bg);
+            font-family: 'Outfit', 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+        }
+        .sidebar {
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            color: white;
+            position: fixed;
+            width: 260px;
+            z-index: 1000;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        .sidebar-header {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar-logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .sidebar-menu {
+            padding: 25px 0;
+        }
+        .sidebar-item {
+            padding: 14px 25px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .sidebar-item:hover, .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left-color: white;
+            padding-left: 30px;
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+        .top-header {
+            background: white;
+            padding: 20px 35px;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); }
+        .stat-icon { font-size: 2.2rem; margin-bottom: 15px; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .content-section { display: none; animation: fadeIn 0.5s ease; }
+        .content-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .premium-table { background: white; border-radius: 20px; overflow: hidden; box-shadow: var(--card-shadow); }
+        .premium-table th { padding: 18px 25px; font-weight: 600; color: #4a5568; background: #f1f4f9; border: none; }
+        .premium-table td { padding: 15px 25px; vertical-align: middle; border-bottom: 1px solid #f1f4f9; }
+        .btn-premium { background: var(--primary-gradient); color: white; border: none; padding: 10px 22px; border-radius: 12px; font-weight: 600; transition: all 0.3s; }
+        .btn-premium:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); color: white; }
+        .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .status-active { background: #e6fffa; color: #319795; }
+        .status-pending { background: #fffaf0; color: #dd6b20; }
+        .logout-btn { background: #fff5f5; color: #e53e3e; border: 1px solid #feb2b2; padding: 8px 18px; border-radius: 10px; }
+        .user-avatar { width: 45px; height: 45px; border-radius: 12px; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo"><i class="fas fa-church me-2"></i>FaithLink</div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="sidebar-item active" onclick="showSection('dashboard')"><i class="fas fa-chart-pie"></i> Overview</div>
+            <div class="sidebar-item admin-only pastor-only" id="navMembers" onclick="showSection('members')"><i class="fas fa-users"></i> Members</div>
+            <div class="sidebar-item" onclick="showSection('events')"><i class="fas fa-calendar-alt"></i> Events</div>
+            <div class="sidebar-item" onclick="showSection('groups')"><i class="fas fa-layer-group"></i> Groups</div>
+            <div class="sidebar-item" onclick="showSection('sermons')"><i class="fas fa-microphone"></i> Sermons</div>
+            <div class="sidebar-item" onclick="showSection('prayers')"><i class="fas fa-hands-praying"></i> Prayer Requests</div>
+            <div class="sidebar-item admin-only treasurer-only pastor-only" id="navDonations" onclick="showSection('donations')"><i class="fas fa-donate"></i> Finance</div>
+            <div class="sidebar-item member-only d-none" onclick="showSection('myDonations')"><i class="fas fa-hand-holding-heart"></i> My Giving</div>
+            <div class="sidebar-item" onclick="showSection('announcements')"><i class="fas fa-bullhorn"></i> Bulletins</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-header">
+            <div>
+                <h4 class="mb-0 fw-bold" id="pageHeader">Overview</h4>
+                <span class="text-muted small">Welcome back, <span id="headerName">Admin</span></span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="dropdown me-3">
+                    <button class="btn btn-outline-primary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-globe me-1"></i> <span id="currentLang">English</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="changeLang('en')">English</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLang('fr')">Français</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLang('rw')">Kinyarwanda</a></li>
+                    </ul>
+                </div>
+                <!-- Notifications -->
+                <div class="dropdown me-3">
+                    <button class="btn btn-link text-dark position-relative p-0" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell fa-lg"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notifBadge">3</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end p-3" style="width: 250px;">
+                        <li class="small fw-bold border-bottom pb-2">Recent Notifications</li>
+                        <li class="small py-2 border-bottom">✨ New Sermon: "The Power of Grace"</li>
+                        <li class="small py-2 border-bottom">🙏 Pastor replied to your prayer</li>
+                        <li class="small py-2">📅 New Church Event scheduled</li>
+                    </ul>
+                </div>
+                <div class="text-end d-none d-md-block">
+                    <div class="fw-bold" id="userDisplay">Admin User</div>
+                    <div class="user-avatar" id="userAvatar" style="float:right; margin-left:10px;">A</div>
+                </div>
+                <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </div>
+
+        <!-- SECTION: DASHBOARD -->
+        <div id="dashboardSection" class="content-section active">
+            <div class="row g-4 mb-5">
+                <div class="col-md-3 admin-only pastor-only">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <h2 class="fw-bold mb-1" id="statMembers">0</h2>
+                        <div class="text-muted small text-uppercase">Members</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
+                        <h2 class="fw-bold mb-1" id="statEvents">0</h2>
+                        <div class="text-muted small text-uppercase">Upcoming Events</div>
+                    </div>
+                </div>
+                <div class="col-md-3 admin-only treasurer-only pastor-only">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon"><i class="fas fa-heart"></i></div>
+                        <h2 class="fw-bold mb-1" id="statDonations">$0</h2>
+                        <div class="text-muted small text-uppercase">Total Donations</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                        <h2 class="fw-bold mb-1" id="statGroups">0</h2>
+                        <div class="text-muted small text-uppercase">Active Groups</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 admin-only treasurer-only pastor-only">
+                <div class="col-md-8">
+                    <div class="stat-card">
+                        <h5 class="fw-bold mb-4">Financial Growth</h5>
+                        <div style="height: 300px;"><canvas id="analyticsChart"></canvas></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <h5 class="fw-bold mb-4">Quick Actions</h5>
+                        <div class="d-grid gap-3">
+                            <button class="btn btn-premium text-start admin-only treasurer-only pastor-only" data-bs-toggle="modal" data-bs-target="#donationModal"><i class="fas fa-plus me-2"></i> Record Donation</button>
+                            <button class="btn btn-premium text-start admin-only pastor-only" data-bs-toggle="modal" data-bs-target="#memberModal"><i class="fas fa-user-plus me-2"></i> Add Member</button>
+                            <button class="btn btn-premium text-start admin-only pastor-only" data-bs-toggle="modal" data-bs-target="#eventModal"><i class="fas fa-calendar-plus me-2"></i> Schedule Event</button>
+                            <button class="btn btn-premium text-start admin-only pastor-only" data-bs-toggle="modal" data-bs-target="#sermonModal"><i class="fas fa-video me-2"></i> Upload Sermon</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row g-4 member-only d-none mt-2">
+                <div class="col-md-6">
+                    <div class="stat-card text-center py-4">
+                        <div class="stat-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                        <h4 class="fw-bold">Support Our Church</h4>
+                        <p class="text-muted small">Your contributions help us grow and support our community missions.</p>
+                        <button class="btn btn-premium mt-2" data-bs-toggle="modal" data-bs-target="#donationModal">
+                            <i class="fas fa-gift me-2"></i>Make a Donation
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="stat-card text-center py-4">
+                        <div class="stat-icon"><i class="fas fa-hands-praying"></i></div>
+                        <h4 class="fw-bold">Request Prayer</h4>
+                        <p class="text-muted small">Need prayer? Share your request with our pastoral team.</p>
+                        <button class="btn btn-premium mt-2" data-bs-toggle="modal" data-bs-target="#prayerModal">
+                            <i class="fas fa-paper-plane me-2"></i>Send Request
+                        </button>
+                    </div>
+                </div>
+                <div class="col-12 mt-4">
+                    <div class="stat-card">
+                        <h5 class="fw-bold mb-3"><i class="fas fa-calendar-check me-2 text-primary"></i>Upcoming Featured Events</h5>
+                        <div id="memberEventsList" class="row g-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="membersSection" class="content-section">
+            <div class="d-flex justify-content-between mb-4">
+                <h4 class="fw-bold">Church Members</h4>
+                <button class="btn btn-premium" data-bs-toggle="modal" data-bs-target="#memberModal">Add Member</button>
+            </div>
+            <div class="premium-table table-responsive"><table class="table"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Status</th></tr></thead><tbody id="membersTableBody"></tbody></table></div>
+        </div>
+
+        <div id="eventsSection" class="content-section">
+            <h4 class="fw-bold mb-4">Events Calendar</h4>
+            <div class="premium-table table-responsive"><table class="table"><thead><tr><th>Event</th><th>Location</th><th>Date/Time</th></tr></thead><tbody id="eventsTableBody"></tbody></table></div>
+        </div>
+
+        <div id="donationsSection" class="content-section">
+            <h4 class="fw-bold mb-4">Donation Records</h4>
+            <div class="premium-table table-responsive"><table class="table"><thead><tr><th>Donor</th><th>Amount</th><th>Type</th><th>Status</th></tr></thead><tbody id="donationsTableBody"></tbody></table></div>
+        </div>
+
+        <div id="groupsSection" class="content-section">
+            <h4 class="fw-bold mb-4">Church Groups</h4>
+            <div class="premium-table table-responsive"><table class="table"><thead><tr><th>Group</th><th>Description</th><th>Action</th></tr></thead><tbody id="groupsTableBody"></tbody></table></div>
+        </div>
+
+        <div id="sermonsSection" class="content-section">
+            <h4 class="fw-bold mb-4">Sermon Archive</h4>
+            <div class="row g-4" id="sermonsList"></div>
+        </div>
+
+        <div id="prayersSection" class="content-section">
+            <div class="d-flex justify-content-between mb-4">
+                <h4 class="fw-bold">Prayer Wall</h4>
+                <button class="btn btn-premium member-only d-none" data-bs-toggle="modal" data-bs-target="#prayerModal">New Request</button>
+            </div>
+            <div class="row g-4" id="prayersList"></div>
+        </div>
+
+        <div id="announcementsSection" class="content-section">
+            <h4 class="fw-bold mb-4">Church Bulletins</h4>
+            <div class="row g-4" id="announcementsList"></div>
+        </div>
+
+        <div id="myDonationsSection" class="content-section">
+            <h4 class="fw-bold mb-4">My Donation History</h4>
+            <div class="premium-table table-responsive"><table class="table"><thead><tr><th>Date</th><th>Amount</th><th>Type</th><th>Method</th></tr></thead><tbody id="myDonationsTableBody"></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- CLEAN MODALS AREA (Unified) -->
+    <div class="modal fade" id="donationModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form id="donationForm"><div class="modal-body"><h5>Record Donation</h5><label class="small text-muted">Amount</label><input type="number" name="amount" class="form-control mb-3" placeholder="0.00" step="0.01" required><label class="small text-muted">Fund Type</label><select name="fundType" class="form-select mb-3"><option value="TITHE">Tithe</option><option value="OFFERING">Offering</option><option value="BUILDING_FUND">Building Fund</option></select><label class="small text-muted">Payment Method</label><select name="paymentMethod" class="form-select mb-3"><option value="CASH">Cash</option><option value="MOBILE_MONEY">Mobile Money</option></select></div><div class="modal-footer"><button type="submit" class="btn btn-premium w-100">Submit Donation</button></div></form></div></div></div>
+
+    <div class="modal fade" id="memberModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form id="memberForm"><div class="modal-body"><h5>New Member Registration</h5><input type="text" name="firstName" class="form-control mb-2" placeholder="First Name" required><input type="text" name="lastName" class="form-control mb-2" placeholder="Last Name" required><input type="email" name="email" class="form-control mb-2" placeholder="Email Address" required><input type="password" name="password" class="form-control mb-2" placeholder="Password" minlength="6" required></div><div class="modal-footer"><button type="submit" class="btn btn-premium w-100">Register</button></div></form></div></div></div>
+
+    <div class="modal fade" id="eventModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form id="eventForm"><div class="modal-body"><h5>Schedule Event</h5><input type="text" name="title" class="form-control mb-2" placeholder="Title" required><input type="text" name="location" class="form-control mb-2" placeholder="Location" required><input type="datetime-local" name="startTime" class="form-control mb-2" required><input type="datetime-local" name="endTime" class="form-control" required></div><div class="modal-footer"><button type="submit" class="btn btn-premium w-100">Publish</button></div></form></div></div></div>
+
+    <div class="modal fade" id="prayerModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form id="prayerForm"><div class="modal-body"><h5>Ask for Prayer</h5><input type="text" name="subject" class="form-control mb-3" placeholder="Subject (e.g., Healing, Career)" required><textarea name="content" class="form-control" rows="4" placeholder="How can we pray for you?" required></textarea></div><div class="modal-footer"><button type="submit" class="btn btn-premium w-100">Send Prayer Request</button></div></form></div></div></div>
+    <div class="modal fade" id="sermonModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form id="sermonForm"><div class="modal-body"><h5>Upload Sermon</h5><input type="text" name="title" class="form-control mb-2" placeholder="Sermon Title" required><input type="text" name="preacherName" class="form-control mb-2" placeholder="Preacher Name" required><textarea name="content" class="form-control mb-2" placeholder="Summary or Scripture" rows="3"></textarea><input type="text" name="videoUrl" class="form-control" placeholder="Video URL (YouTube/Vimeo)"></div><div class="modal-footer"><button type="submit" class="btn btn-premium w-100">Upload</button></div></form></div></div></div>
+    <div class="modal fade" id="prayerReplyModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form id="prayerReplyForm"><div class="modal-body"><h5>Respond to Prayer</h5><input type="hidden" id="replyRequestId"><p id="replyRequestText" class="small text-muted"></p><textarea id="replyContent" class="form-control" rows="4" placeholder="Your words of grace..." required></textarea></div><div class="modal-footer"><button type="submit" class="btn btn-premium w-100">Send Response</button></div></form></div></div></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let currentUser = null;
+        let mainChart = null;
+
+        window.onload = function() {
+            const userJson = localStorage.getItem('user');
+            if (!userJson) { window.location.href = '/login'; return; }
+            currentUser = JSON.parse(userJson);
+            
+            // GRANULAR ROLE CONTROL
+            const roles = currentUser.roles || [];
+            const isAdmin = roles.includes('ROLE_ADMIN');
+            const isPastor = roles.includes('ROLE_PASTOR');
+            const isTreasurer = roles.includes('ROLE_TREASURER');
+            const isMember = roles.includes('ROLE_MEMBER');
+
+            // Hide everything by default, then selectively show
+            document.querySelectorAll('.admin-only, .pastor-only, .treasurer-only, .member-only').forEach(el => el.classList.add('d-none'));
+
+            if (isAdmin || isPastor) {
+                document.querySelectorAll('.admin-only, .pastor-only').forEach(el => el.classList.remove('d-none'));
+            }
+            if (isAdmin || isTreasurer) {
+                document.querySelectorAll('.treasurer-only').forEach(el => el.classList.remove('d-none'));
+            }
+            if (isMember || isPastor || isAdmin) {
+                document.querySelectorAll('.member-only').forEach(el => el.classList.remove('d-none'));
+            }
+
+            // Forced Global Visibility for Events & Sermons
+            loadEvents();
+            loadSermons();
+            loadAnnouncements();
+            
+            updateUserInfo();
+            loadDashboardStats();
+            initCharts();
+            initI18n();
+            setupFormHandlers();
+        };
+
+        function updateUserInfo() {
+            document.getElementById('headerName').textContent = currentUser.firstName;
+            document.getElementById('userDisplay').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            document.getElementById('userAvatar').textContent = currentUser.firstName.charAt(0);
+        }
+
+        async function fetchWithAuth(url, options = {}) {
+            options.headers = { ...options.headers, 'Authorization': `Bearer ${currentUser.token}`, 'Content-Type': 'application/json' };
+            const res = await fetch(url, options);
+            if(res.status === 401) logout();
+            return res;
+        }
+
+        function showSection(id) {
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.sidebar-item').forEach(i => { 
+                const clickAttr = i.getAttribute('onclick');
+                if(clickAttr && clickAttr.includes(id)) i.classList.add('active'); 
+            });
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id + 'Section').classList.add('active');
+            
+            let headerText = id.charAt(0).toUpperCase() + id.slice(1);
+            if(id === 'myDonations') headerText = 'My Giving';
+            document.getElementById('pageHeader').textContent = headerText;
+
+            if(id === 'dashboard') loadDashboardStats();
+            if(id === 'members') loadMembers();
+            if(id === 'events') loadEvents();
+            if(id === 'donations') loadDonations();
+            if(id === 'myDonations') loadMyDonations();
+            if(id === 'groups') loadGroups();
+            if(id === 'sermons') loadSermons();
+            if(id === 'prayers') loadPrayers();
+            if(id === 'announcements') loadAnnouncements();
+        }
+
+        async function loadDashboardStats() {
+            const res = await fetchWithAuth(`/api/admin/stats/church/${currentUser.churchId}`);
+            if(res.ok) {
+                const stats = await res.json();
+                if(document.getElementById('statMembers')) document.getElementById('statMembers').textContent = stats.userCount;
+                if(document.getElementById('statEvents')) document.getElementById('statEvents').textContent = stats.eventCount;
+                if(document.getElementById('statDonations')) document.getElementById('statDonations').textContent = `$${stats.totalDonations.toLocaleString()}`;
+                if(document.getElementById('statGroups')) document.getElementById('statGroups').textContent = stats.groupCount;
+                updateChart(stats.totalDonations);
+            }
+        }
+
+        function initCharts() {
+            const ctx = document.getElementById('analyticsChart').getContext('2d');
+            mainChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Current'],
+                    datasets: [{ label: 'Donations', data: [1200, 1900, 3000, 5000, 2400, 0], borderColor: '#667eea', tension: 0.4, fill: true, backgroundColor: 'rgba(102, 126, 234, 0.1)' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function updateChart(val) { if(mainChart && document.getElementById('analyticsChart')) { mainChart.data.datasets[0].data[5] = val; mainChart.update(); } }
+
+        async function loadMembers() {
+            const res = await fetchWithAuth(`/api/users/church/${currentUser.churchId}`);
+            if(res.ok) {
+                const data = await res.json();
+                document.getElementById('membersTableBody').innerHTML = data.map(u => `<tr><td>${u.firstName} ${u.lastName}</td><td>${u.email}</td><td>${u.phone || '-'}</td><td><span class="status-pill status-active">Active</span></td></tr>`).join('');
+            }
+        }
+
+        async function loadEvents() {
+            const res = await fetchWithAuth(`/api/events/church/${currentUser.churchId}`);
+            if(res.ok) {
+                const data = await res.json();
+                document.getElementById('eventsTableBody').innerHTML = data.map(e => `<tr><td>${e.title}</td><td>${e.location}</td><td>${new Date(e.startTime).toLocaleString()}</td></tr>`).join('');
+                const memberList = document.getElementById('memberEventsList');
+                if(memberList) memberList.innerHTML = data.slice(0, 3).map(e => `<div class="col-md-4"><div class="p-3 border rounded"><h6 class="fw-bold mb-1">${e.title}</h6><p class="text-muted small mb-0"><i class="fas fa-map-marker-alt me-1"></i> ${e.location}</p><p class="text-primary small fw-bold">${new Date(e.startTime).toLocaleDateString()}</p></div></div>`).join('');
+            }
+        }
+
+        async function loadGroups() {
+            const res = await fetchWithAuth(`/api/groups/church/${currentUser.churchId}`);
+            if(res.ok) {
+                const data = await res.json();
+                document.getElementById('groupsTableBody').innerHTML = data.map(g => `
+                    <tr>
+                        <td>${g.name}</td>
+                        <td>${g.description || '-'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-premium" onclick="joinGroup('${g.id}')">
+                                Join
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        async function joinGroup(groupId) {
+            const res = await fetchWithAuth(`/api/groups/${groupId}/enroll/${currentUser.id}`, { method: 'POST' });
+            if(res.ok) {
+                alert('Successfully enrolled in group!');
+            } else {
+                alert('Error joining group. You may already be a member.');
+            }
+        }
+
+        async function loadSermons() {
+            const res = await fetchWithAuth(`/api/sermons/church/${currentUser.churchId}`);
+            if(res.ok) {
+                const data = await res.json();
+                document.getElementById('sermonsList').innerHTML = data.map(s => `
+                    <div class="col-md-6"><div class="stat-card">
+                        <h6 class="fw-bold"><i class="fas fa-play-circle me-2 text-primary"></i>${s.title}</h6>
+                        <p class="text-muted small">${s.description}</p>
+                        <div class="d-flex justify-content-between small text-primary fw-bold"><span>${s.preacher}</span><span>${new Date(s.date).toLocaleDateString()}</span></div>
+                    </div></div>
+                `).join('');
+            }
+        }
+
+        async function loadPrayers() {
+            const res = await fetchWithAuth(`/api/prayer-requests/church/${currentUser.churchId}`);
+            if(res.ok) {
+                const data = await res.json();
+                const isPastor = currentUser.roles.includes('ROLE_PASTOR') || currentUser.roles.includes('ROLE_ADMIN');
+                document.getElementById('prayersList').innerHTML = data.map(p => `
+                    <div class="col-md-4"><div class="stat-card">
+                        <h6 class="fw-bold border-bottom pb-2">${p.subject}</h6>
+                        <p class="small text-muted mb-2">${p.content}</p>
+                        ${p.response ? `<div class="p-2 bg-light rounded small mb-2"><b>Pastor:</b> ${p.response}</div>` : ''}
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="status-pill ${p.status === 'PENDING' ? 'status-pending' : 'status-active'}">${p.status}</span>
+                            ${isPastor && !p.response ? `<button class="btn btn-sm btn-outline-primary" onclick="openReplyModal('${p.id}', '${p.content}')">Reply</button>` : ''}
+                        </div>
+                    </div></div>
+                `).join('');
+            }
+        }
+
+        function openReplyModal(id, text) {
+            document.getElementById('replyRequestId').value = id;
+            document.getElementById('replyRequestText').textContent = text;
+            new bootstrap.Modal(document.getElementById('prayerReplyModal')).show();
+        }
+
+        document.getElementById('prayerReplyForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('replyRequestId').value;
+            const response = document.getElementById('replyContent').value;
+            const res = await fetchWithAuth(`/api/prayer-requests/${id}/respond`, {
+                method: 'POST',
+                body: JSON.stringify({ response })
+            });
+            if(res.ok) {
+                alert('Reply sent!');
+                bootstrap.Modal.getInstance(document.getElementById('prayerReplyModal')).hide();
+                loadPrayers();
+            }
+        };
+
+        const i18n = {
+            en: { overview: "Overview", members: "Members", events: "Events", groups: "Groups", sermons: "Sermons", prayers: "Prayer Requests", finance: "Finance", bulletins: "Bulletins" },
+            fr: { overview: "Aperçu", members: "Membres", events: "Événements", groups: "Groupes", sermons: "Sermons", prayers: "Demandes de Prière", finance: "Finance", bulletins: "Bulletins" },
+            rw: { overview: "Incamake", members: "Abakristu", events: "Ibikorwa", groups: "Amatsinda", sermons: "Inyigisho", prayers: "Gusaba Isengesho", finance: "Imari", bulletins: "Amatangazo" }
+        };
+
+        function changeLang(lang) {
+            localStorage.setItem('lang', lang);
+            document.getElementById('currentLang').textContent = lang === 'en' ? 'English' : lang === 'fr' ? 'Français' : 'Kinyarwanda';
+            const dict = i18n[lang];
+            document.querySelector('[onclick="showSection(\'dashboard\')"]').innerHTML = `<i class="fas fa-chart-pie"></i> ${dict.overview}`;
+            document.getElementById('navMembers').innerHTML = `<i class="fas fa-users"></i> ${dict.members}`;
+            document.querySelector('[onclick="showSection(\'events\')"]').innerHTML = `<i class="fas fa-calendar-alt"></i> ${dict.events}`;
+            document.querySelector('[onclick="showSection(\'groups\')"]').innerHTML = `<i class="fas fa-layer-group"></i> ${dict.groups}`;
+            document.querySelector('[onclick="showSection(\'sermons\')"]').innerHTML = `<i class="fas fa-microphone"></i> ${dict.sermons}`;
+            document.querySelector('[onclick="showSection(\'prayers\')"]').innerHTML = `<i class="fas fa-hands-praying"></i> ${dict.prayers}`;
+            document.getElementById('navDonations').innerHTML = `<i class="fas fa-donate"></i> ${dict.finance}`;
+            document.querySelector('[onclick="showSection(\'announcements\')"]').innerHTML = `<i class="fas fa-bullhorn"></i> ${dict.bulletins}`;
+            document.getElementById('pageHeader').textContent = dict.overview;
+        }
+
+        function initI18n() {
+            const lang = localStorage.getItem('lang') || 'en';
+            changeLang(lang);
+        }
+
+        async function loadAnnouncements() {
+            const res = await fetchWithAuth(`/api/sync/bootstrap/${currentUser.churchId}`);
+            if(res.ok) {
+                const data = await res.json();
+                const items = data.announcements || [];
+                document.getElementById('announcementsList').innerHTML = items.map(a => `
+                    <div class="col-12"><div class="stat-card border-start border-4 border-primary">
+                        <h6 class="fw-bold">${a.title}</h6>
+                        <p class="mb-0 text-muted">${a.content}</p>
+                    </div></div>
+                `).join('');
+            }
+        }
+
+        async function loadMyDonations() {
+            const res = await fetchWithAuth(`/api/donations/church/${currentUser.churchId}`);
+            if(res.ok) {
+                const all = await res.json();
+                const data = all.filter(d => d.userId === currentUser.id);
+                document.getElementById('myDonationsTableBody').innerHTML = data.map(d => `<tr><td>${new Date(d.donationDate).toLocaleDateString()}</td><td class="fw-bold text-success">$${d.amount.toFixed(2)}</td><td>${d.fundType}</td><td>${d.paymentMethod}</td></tr>`).join('');
+            }
+        }
+
+        async function loadDonations() {
+            const res = await fetchWithAuth(`/api/donations/church/${currentUser.churchId}`);
+            if(res.ok) {
+                const data = await res.json();
+                document.getElementById('donationsTableBody').innerHTML = data.map(d => `<tr><td>${d.userName}</td><td>$${d.amount.toFixed(2)}</td><td>${d.fundType}</td><td><span class="status-pill ${d.isVerified ? 'status-active' : 'status-pending'}">${d.isVerified ? 'Verified' : 'Pending'}</span></td></tr>`).join('');
+            }
+        }
+
+        function setupFormHandlers() {
+            const config = [
+                { id: 'donationForm', url: '/api/donations', modal: 'donationModal' },
+                { id: 'memberForm', url: '/api/auth/register', modal: 'memberModal' },
+                { id: 'eventForm', url: '/api/events', modal: 'eventModal' },
+                { id: 'prayerForm', url: '/api/prayer-requests', modal: 'prayerModal' },
+                { id: 'sermonForm', url: '/api/sermons', modal: 'sermonModal' }
+            ];
+            config.forEach(item => {
+                const form = document.getElementById(item.id);
+                if(!form) return;
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    let data = Object.fromEntries(new FormData(e.target).entries());
+                    data.churchId = currentUser.churchId;
+                    if(item.id === 'donationForm' || item.id === 'prayerForm') data.userId = currentUser.id;
+                    
+                    const res = await fetchWithAuth(item.url, { method: 'POST', body: JSON.stringify(data) });
+                    if(res.ok) {
+                        alert('Submitted successfully!');
+                        bootstrap.Modal.getInstance(document.getElementById(item.modal)).hide();
+                        form.reset();
+                        loadDashboardStats();
+                        showSection(document.querySelector('.sidebar-item.active').getAttribute('onclick').match(/'([^']+)'/)[1]);
+                    }
+                };
+            });
+        }
+
+        function logout() { localStorage.removeItem('user'); window.location.href = '/login'; }
+    </script>
+</body>
+</html>
