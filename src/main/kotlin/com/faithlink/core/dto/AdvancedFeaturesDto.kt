@@ -4,7 +4,7 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.UUID
 
-data class GroupSummaryDto(
+data class ChurchGroupSummaryDto(
     val id: UUID,
     val name: String,
     val description: String?,

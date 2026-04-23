@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
 import java.util.UUID
 
-data class GroupCreateRequest(
+data class ChurchGroupCreateRequest(
     @field:NotBlank(message = "Group name is required")
     @field:Size(max = 100, message = "Group name must not exceed 100 characters")
     val name: String,
@@ -18,7 +18,7 @@ data class GroupCreateRequest(
     val churchId: UUID
 )
 
-data class GroupResponse(
+data class ChurchGroupResponse(
     val id: UUID,
     val name: String,
     val description: String?,
@@ -29,8 +29,8 @@ data class GroupResponse(
     val updatedAt: LocalDateTime
 ) {
     companion object {
-        fun from(group: com.faithlink.core.entity.Group): GroupResponse {
-            return GroupResponse(
+        fun from(group: com.faithlink.core.entity.ChurchGroup): ChurchGroupResponse {
+            return ChurchGroupResponse(
                 id = group.id!!,
                 name = group.name,
                 description = group.description,

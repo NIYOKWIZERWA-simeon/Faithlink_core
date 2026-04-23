@@ -17,7 +17,7 @@ data class UserGroup(
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
-    val group: Group,
+    val group: ChurchGroup,
     
     @Column(nullable = false, length = 20)
     var status: String = "ACTIVE", // e.g., ACTIVE, PENDING, INACTIVE

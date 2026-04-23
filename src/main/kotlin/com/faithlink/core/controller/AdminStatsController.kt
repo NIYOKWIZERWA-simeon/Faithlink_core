@@ -3,7 +3,7 @@ package com.faithlink.core.controller
 import com.faithlink.core.service.UserService
 import com.faithlink.core.service.DonationService
 import com.faithlink.core.service.EventService
-import com.faithlink.core.service.GroupService
+import com.faithlink.core.service.ChurchGroupService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -17,7 +17,7 @@ class AdminStatsController(
     private val userService: UserService,
     private val donationService: DonationService,
     private val eventService: EventService,
-    private val groupService: GroupService
+    private val churchGroupService: ChurchGroupService
 ) {
 
     @GetMapping("/church/{churchId}")
@@ -34,7 +34,7 @@ class AdminStatsController(
         val events = eventService.getEventsByChurch(churchId)
         stats["eventCount"] = events.size
         
-        val groups = groupService.getGroupsByChurch(churchId)
+        val groups = churchGroupService.getGroupsByChurch(churchId)
         stats["groupCount"] = groups.size
         
         return ResponseEntity.ok(stats)

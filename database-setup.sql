@@ -69,8 +69,8 @@ CREATE TABLE user_roles (
     CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
 );
 
--- ── Groups ────────────────────────────────────────────────────
-CREATE TABLE groups (
+-- ── Church Groups ─────────────────────────────────────────────
+CREATE TABLE church_groups (
     id BINARY(16) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -90,7 +90,7 @@ CREATE TABLE user_groups (
     group_id BINARY(16) NOT NULL,
     joined_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_ug_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_ug_group FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
+    CONSTRAINT fk_ug_group FOREIGN KEY (group_id) REFERENCES church_groups(id) ON DELETE CASCADE
 );
 
 -- ── Donations ─────────────────────────────────────────────────

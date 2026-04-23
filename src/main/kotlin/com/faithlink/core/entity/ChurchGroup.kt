@@ -5,8 +5,8 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @Entity
-@Table(name = "groups")
-data class Group(
+@Table(name = "church_groups")
+data class ChurchGroup(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     val id: UUID? = null,

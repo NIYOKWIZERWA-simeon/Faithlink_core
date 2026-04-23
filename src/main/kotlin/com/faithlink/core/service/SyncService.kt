@@ -13,7 +13,7 @@ class SyncService(
     private val userRepository: UserRepository,
     private val eventRepository: EventRepository,
     private val donationRepository: DonationRepository,
-    private val groupRepository: GroupRepository,
+    private val churchGroupRepository: ChurchGroupRepository,
     private val sermonRepository: SermonRepository,
     private val prayerRequestRepository: PrayerRequestRepository,
     private val announcementRepository: AnnouncementRepository
@@ -28,7 +28,7 @@ class SyncService(
             "church" to church,
             "users" to userRepository.findByChurchId(churchId),
             "events" to eventRepository.findByChurchId(churchId),
-            "groups" to groupRepository.findByChurchId(churchId),
+            "groups" to churchGroupRepository.findByChurchId(churchId),
             "sermons" to sermonRepository.findByChurchId(churchId),
             "announcements" to announcementRepository.findByChurchIdAndExpiryDateAfterOrExpiryDateIsNull(churchId, LocalDateTime.now())
         )

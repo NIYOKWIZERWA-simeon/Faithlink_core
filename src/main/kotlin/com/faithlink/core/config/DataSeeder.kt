@@ -14,7 +14,7 @@ class DataSeeder(
     private val churchRepository: ChurchRepository,
     private val roleRepository: RoleRepository,
     private val userRepository: UserRepository,
-    private val groupRepository: GroupRepository,
+    private val churchGroupRepository: ChurchGroupRepository,
     private val passwordEncoder: PasswordEncoder
 ) : CommandLineRunner {
 
@@ -78,14 +78,14 @@ class DataSeeder(
         ))
 
         // 4. Seed Groups
-        groupRepository.save(Group(
+        churchGroupRepository.save(ChurchGroup(
             name = "Youth For Christ",
             description = "Empowering the next generation",
             church = mainChurch,
             leader = pastorUser
         ))
 
-        groupRepository.save(Group(
+        churchGroupRepository.save(ChurchGroup(
             name = "Celestial Choir",
             description = "Lifting voices in praise",
             church = mainChurch,
