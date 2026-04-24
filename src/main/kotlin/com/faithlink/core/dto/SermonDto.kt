@@ -17,7 +17,7 @@ data class SermonCreateRequest(
     val videoUrl: String? = null,
     val audioUrl: String? = null,
     val churchId: UUID,
-    val sermonDate: LocalDateTime = LocalDateTime.now()
+    val sermonDate: LocalDateTime? = null
 )
 
 data class SermonResponse(

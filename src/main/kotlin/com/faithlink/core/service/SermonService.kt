@@ -21,7 +21,7 @@ class SermonService(
             videoUrl = dto.videoUrl,
             audioUrl = dto.audioUrl,
             church = church,
-            sermonDate = dto.sermonDate
+            sermonDate = dto.sermonDate ?: LocalDateTime.now()
         )
         return sermonRepository.save(sermon)
     }
