@@ -18,8 +18,8 @@ class ChurchGroupController(private val churchGroupService: ChurchGroupService) 
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    fun createGroup(@RequestBody group: ChurchGroup): ResponseEntity<ChurchGroup> {
-        return ResponseEntity.ok(churchGroupService.createGroup(group))
+    fun createGroup(@RequestBody request: com.faithlink.core.dto.ChurchGroupCreateRequest): ResponseEntity<ChurchGroup> {
+        return ResponseEntity.ok(churchGroupService.createGroupFromDto(request))
     }
 
     @DeleteMapping("/{id}")

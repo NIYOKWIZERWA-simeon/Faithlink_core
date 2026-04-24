@@ -15,12 +15,14 @@ class EventService(
     fun createEventFromDto(dto: com.faithlink.core.dto.EventRequest): Event {
         val church = churchRepository.findById(dto.churchId).orElseThrow { RuntimeException("Church not found") }
         
+        val formatter = java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
+        
         val event = Event(
             title = dto.title,
             description = dto.description,
             location = dto.location,
-            startTime = java.time.LocalDateTime.parse(dto.startTime),
-            endTime = java.time.LocalDateTime.parse(dto.endTime),
+            startTime = java.time.LocalDateTime.parse(dto.startTime, formatter),
+            endTime = java.time.LocalDateTime.parse(dto.endTime, formatter),
             church = church
         )
         return eventRepository.save(event)

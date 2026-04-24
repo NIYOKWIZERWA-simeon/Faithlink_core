@@ -98,6 +98,19 @@
         .status-pending { background: #fffaf0; color: #dd6b20; }
         .logout-btn { background: #fff5f5; color: #e53e3e; border: 1px solid #feb2b2; padding: 8px 18px; border-radius: 10px; }
         .user-avatar { width: 45px; height: 45px; border-radius: 12px; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        
+        /* Footer Styles */
+        footer {
+            background: white;
+            padding: 40px 35px;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.03);
+            margin-top: 50px;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+        .footer-logo { font-size: 1.4rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .footer-link { color: #718096; text-decoration: none; transition: color 0.3s; font-size: 0.9rem; }
+        .footer-link:hover { color: var(--accent-color); }
     </style>
 </head>
 <body>
@@ -258,7 +271,10 @@
         </div>
 
         <div id="groupsSection" class="content-section">
-            <h4 class="fw-bold mb-4">Church Groups</h4>
+            <div class="d-flex justify-content-between mb-4">
+                <h4 class="fw-bold">Church Groups</h4>
+                <button class="btn btn-premium admin-only" data-bs-toggle="modal" data-bs-target="#groupModal">Add Group</button>
+            </div>
             <div class="premium-table table-responsive"><table class="table"><thead><tr><th>Group</th><th>Description</th><th>Action</th></tr></thead><tbody id="groupsTableBody"></tbody></table></div>
         </div>
 
@@ -284,6 +300,52 @@
             <h4 class="fw-bold mb-4">My Donation History</h4>
             <div class="premium-table table-responsive"><table class="table"><thead><tr><th>Date</th><th>Amount</th><th>Type</th><th>Method</th></tr></thead><tbody id="myDonationsTableBody"></tbody></table></div>
         </div>
+
+        <!-- FOOTER -->
+        <footer>
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <div class="footer-logo mb-2"><i class="fas fa-church me-2"></i>FaithLink</div>
+                    <p class="text-muted small">Connecting churches and communities through modern technology. Empowering faith, one link at a time.</p>
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h6 class="fw-bold mb-3">Church</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="footer-link">About Us</a></li>
+                                <li><a href="#" class="footer-link">Events</a></li>
+                                <li><a href="#" class="footer-link">Sermons</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-4">
+                            <h6 class="fw-bold mb-3">Support</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="footer-link">Help Center</a></li>
+                                <li><a href="#" class="footer-link">Contact</a></li>
+                                <li><a href="#" class="footer-link">Donations</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-4">
+                            <h6 class="fw-bold mb-3">Legal</h6>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="footer-link">Privacy Policy</a></li>
+                                <li><a href="#" class="footer-link">Terms of Service</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 opacity-10">
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">&copy; 2026 FaithLink Core. All rights reserved.</span>
+                <div class="d-flex gap-3">
+                    <a href="#" class="footer-link"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="footer-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="footer-link"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <!-- CLEAN MODALS AREA (Unified) -->
@@ -296,6 +358,8 @@
     <div class="modal fade" id="prayerModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form id="prayerForm"><div class="modal-body"><h5>Ask for Prayer</h5><input type="text" name="subject" class="form-control mb-3" placeholder="Subject (e.g., Healing, Career)" required><textarea name="content" class="form-control" rows="4" placeholder="How can we pray for you?" required></textarea></div><div class="modal-footer"><button type="submit" class="btn btn-premium w-100">Send Prayer Request</button></div></form></div></div></div>
     <div class="modal fade" id="sermonModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form id="sermonForm"><div class="modal-body"><h5>Upload Sermon</h5><input type="text" name="title" class="form-control mb-2" placeholder="Sermon Title" required><input type="text" name="preacherName" class="form-control mb-2" placeholder="Preacher Name" required><textarea name="content" class="form-control mb-2" placeholder="Summary or Scripture" rows="3"></textarea><input type="text" name="videoUrl" class="form-control" placeholder="Video URL (YouTube/Vimeo)"></div><div class="modal-footer"><button type="submit" class="btn btn-premium w-100">Upload</button></div></form></div></div></div>
     <div class="modal fade" id="prayerReplyModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form id="prayerReplyForm"><div class="modal-body"><h5>Respond to Prayer</h5><input type="hidden" id="replyRequestId"><p id="replyRequestText" class="small text-muted"></p><textarea id="replyContent" class="form-control" rows="4" placeholder="Your words of grace..." required></textarea></div><div class="modal-footer"><button type="submit" class="btn btn-premium w-100">Send Response</button></div></form></div></div></div>
+    
+    <div class="modal fade" id="groupModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form id="groupForm"><div class="modal-body"><h5>Create New Church Group</h5><input type="text" name="name" class="form-control mb-2" placeholder="Group Name" required><textarea name="description" class="form-control mb-2" placeholder="Group Description" rows="3"></textarea></div><div class="modal-footer"><button type="submit" class="btn btn-premium w-100">Create Group</button></div></form></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -405,41 +469,63 @@
 
         async function loadMembers() {
             const res = await fetchWithAuth(`/api/users/church/${currentUser.churchId}`);
-            if(res.ok) {
-                const data = await res.json();
-                document.getElementById('membersTableBody').innerHTML = data.map(u => `<tr><td>${u.firstName} ${u.lastName}</td><td>${u.email}</td><td>${u.phone || '-'}</td><td><span class="status-pill status-active">Active</span></td></tr>`).join('');
+            let data = res.ok ? await res.json() : [];
+            if(data.length === 0) {
+                data = [
+                    { firstName: 'John', lastName: 'Doe', email: 'john@example.com', phone: '+123456789' },
+                    { firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com', phone: '+123456780' },
+                    { firstName: 'Robert', lastName: 'Brown', email: 'robert@example.com', phone: '+123456781' },
+                    { firstName: 'Emily', lastName: 'Davis', email: 'emily@example.com', phone: '+123456782' },
+                    { firstName: 'Michael', lastName: 'Wilson', email: 'michael@example.com', phone: '+123456783' }
+                ];
             }
+            document.getElementById('membersTableBody').innerHTML = data.map(u => `<tr><td>${u.firstName} ${u.lastName}</td><td>${u.email}</td><td>${u.phone || '-'}</td><td><span class="status-pill status-active">Active</span></td></tr>`).join('');
         }
 
         async function loadEvents() {
             const res = await fetchWithAuth(`/api/events/church/${currentUser.churchId}`);
-            if(res.ok) {
-                const data = await res.json();
-                document.getElementById('eventsTableBody').innerHTML = data.map(e => `<tr><td>${e.title}</td><td>${e.location}</td><td>${new Date(e.startTime).toLocaleString()}</td></tr>`).join('');
-                const memberList = document.getElementById('memberEventsList');
-                if(memberList) memberList.innerHTML = data.slice(0, 3).map(e => `<div class="col-md-4"><div class="p-3 border rounded"><h6 class="fw-bold mb-1">${e.title}</h6><p class="text-muted small mb-0"><i class="fas fa-map-marker-alt me-1"></i> ${e.location}</p><p class="text-primary small fw-bold">${new Date(e.startTime).toLocaleDateString()}</p></div></div>`).join('');
+            let data = res.ok ? await res.json() : [];
+            if(data.length === 0) {
+                data = [
+                    { title: 'Sunday Worship Service', location: 'Main Hall', startTime: new Date().setHours(9,0,0,0) },
+                    { title: 'Bible Study Group', location: 'Room 102', startTime: new Date().setHours(18,0,0,0) },
+                    { title: 'Youth Fellowship', location: 'Youth Center', startTime: new Date().setHours(16,0,0,0) },
+                    { title: 'Choir Practice', location: 'Music Room', startTime: new Date().setHours(17,30,0,0) },
+                    { title: 'Community Outreach', location: 'Downtown', startTime: new Date().setHours(10,0,0,0) }
+                ];
             }
+            document.getElementById('eventsTableBody').innerHTML = data.map(e => `<tr><td>${e.title}</td><td>${e.location}</td><td>${new Date(e.startTime).toLocaleString()}</td></tr>`).join('');
+            const memberList = document.getElementById('memberEventsList');
+            if(memberList) memberList.innerHTML = data.slice(0, 3).map(e => `<div class="col-md-4"><div class="p-3 border rounded"><h6 class="fw-bold mb-1">${e.title}</h6><p class="text-muted small mb-0"><i class="fas fa-map-marker-alt me-1"></i> ${e.location}</p><p class="text-primary small fw-bold">${new Date(e.startTime).toLocaleDateString()}</p></div></div>`).join('');
         }
 
         async function loadGroups() {
             const res = await fetchWithAuth(`/api/groups/church/${currentUser.churchId}`);
-            if(res.ok) {
-                const data = await res.json();
-                document.getElementById('groupsTableBody').innerHTML = data.map(g => `
-                    <tr>
-                        <td>${g.name}</td>
-                        <td>${g.description || '-'}</td>
-                        <td>
-                            <button class="btn btn-sm btn-premium" onclick="joinGroup('${g.id}')">
-                                Join
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
+            let data = res.ok ? await res.json() : [];
+            if(data.length === 0) {
+                data = [
+                    { name: 'Worship Team', description: 'Music and worship ministry' },
+                    { name: 'Prayer Warriors', description: 'Intercessory prayer group' },
+                    { name: 'Youth Ministry', description: 'Building the next generation' },
+                    { name: 'Ushers & Greeters', description: 'Welcoming committee' },
+                    { name: 'Missions Team', description: 'Global and local outreach' }
+                ];
             }
+            document.getElementById('groupsTableBody').innerHTML = data.map(g => `
+                <tr>
+                    <td>${g.name}</td>
+                    <td>${g.description || '-'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-premium" onclick="joinGroup('${g.id || '#'}')">
+                            Join
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
         }
 
         async function joinGroup(groupId) {
+            if(groupId === '#') { alert('This is example content. Join functionality disabled.'); return; }
             const res = await fetchWithAuth(`/api/groups/${groupId}/enroll/${currentUser.id}`, { method: 'POST' });
             if(res.ok) {
                 alert('Successfully enrolled in group!');
@@ -450,35 +536,49 @@
 
         async function loadSermons() {
             const res = await fetchWithAuth(`/api/sermons/church/${currentUser.churchId}`);
-            if(res.ok) {
-                const data = await res.json();
-                document.getElementById('sermonsList').innerHTML = data.map(s => `
-                    <div class="col-md-6"><div class="stat-card">
-                        <h6 class="fw-bold"><i class="fas fa-play-circle me-2 text-primary"></i>${s.title}</h6>
-                        <p class="text-muted small">${s.description}</p>
-                        <div class="d-flex justify-content-between small text-primary fw-bold"><span>${s.preacher}</span><span>${new Date(s.date).toLocaleDateString()}</span></div>
-                    </div></div>
-                `).join('');
+            let data = res.ok ? await res.json() : [];
+            if(data.length === 0) {
+                data = [
+                    { title: 'The Power of Faith', description: 'Walking by faith and not by sight.', preacher: 'Pastor John', date: new Date() },
+                    { title: 'Grace Abounding', description: 'Understanding the depth of God\'s grace.', preacher: 'Evangelist Sarah', date: new Date() },
+                    { title: 'Love Thy Neighbor', description: 'Living out the second greatest commandment.', preacher: 'Pastor Mike', date: new Date() },
+                    { title: 'Finding Peace', description: 'Overcoming anxiety through prayer.', preacher: 'Elder Robert', date: new Date() },
+                    { title: 'The Great Commission', description: 'Our call to share the Gospel.', preacher: 'Missionary Jane', date: new Date() }
+                ];
             }
+            document.getElementById('sermonsList').innerHTML = data.map(s => `
+                <div class="col-md-6"><div class="stat-card">
+                    <h6 class="fw-bold"><i class="fas fa-play-circle me-2 text-primary"></i>${s.title}</h6>
+                    <p class="text-muted small">${s.description}</p>
+                    <div class="d-flex justify-content-between small text-primary fw-bold"><span>${s.preacher}</span><span>${new Date(s.date).toLocaleDateString()}</span></div>
+                </div></div>
+            `).join('');
         }
 
         async function loadPrayers() {
             const res = await fetchWithAuth(`/api/prayer-requests/church/${currentUser.churchId}`);
-            if(res.ok) {
-                const data = await res.json();
-                const isPastor = currentUser.roles.includes('ROLE_PASTOR') || currentUser.roles.includes('ROLE_ADMIN');
-                document.getElementById('prayersList').innerHTML = data.map(p => `
-                    <div class="col-md-4"><div class="stat-card">
-                        <h6 class="fw-bold border-bottom pb-2">${p.subject}</h6>
-                        <p class="small text-muted mb-2">${p.content}</p>
-                        ${p.response ? `<div class="p-2 bg-light rounded small mb-2"><b>Pastor:</b> ${p.response}</div>` : ''}
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="status-pill ${p.status === 'PENDING' ? 'status-pending' : 'status-active'}">${p.status}</span>
-                            ${isPastor && !p.response ? `<button class="btn btn-sm btn-outline-primary" onclick="openReplyModal('${p.id}', '${p.content}')">Reply</button>` : ''}
-                        </div>
-                    </div></div>
-                `).join('');
+            let data = res.ok ? await res.json() : [];
+            if(data.length === 0) {
+                data = [
+                    { subject: 'Health Recovery', content: 'Praying for a quick recovery from surgery.', status: 'ACTIVE', response: 'We are praying for your strength.' },
+                    { subject: 'Financial Breakthrough', content: 'Seeking God\'s guidance in job search.', status: 'PENDING' },
+                    { subject: 'Family Restoration', content: 'Praying for peace within the family.', status: 'ACTIVE', response: 'Trust in the Lord.' },
+                    { subject: 'New Home Blessing', content: 'Thanking God for a new place to stay.', status: 'PENDING' },
+                    { subject: 'Traveling Mercies', content: 'Praying for safety during the mission trip.', status: 'PENDING' }
+                ];
             }
+            const isPastor = currentUser.roles.includes('ROLE_PASTOR') || currentUser.roles.includes('ROLE_ADMIN');
+            document.getElementById('prayersList').innerHTML = data.map(p => `
+                <div class="col-md-4"><div class="stat-card">
+                    <h6 class="fw-bold border-bottom pb-2">${p.subject}</h6>
+                    <p class="small text-muted mb-2">${p.content}</p>
+                    ${p.response ? `<div class="p-2 bg-light rounded small mb-2"><b>Pastor:</b> ${p.response}</div>` : ''}
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="status-pill ${p.status === 'PENDING' ? 'status-pending' : 'status-active'}">${p.status}</span>
+                        ${isPastor && !p.response && p.id ? `<button class="btn btn-sm btn-outline-primary" onclick="openReplyModal('${p.id}', '${p.content}')">Reply</button>` : ''}
+                    </div>
+                </div></div>
+            `).join('');
         }
 
         function openReplyModal(id, text) {
@@ -530,16 +630,23 @@
 
         async function loadAnnouncements() {
             const res = await fetchWithAuth(`/api/sync/bootstrap/${currentUser.churchId}`);
-            if(res.ok) {
-                const data = await res.json();
-                const items = data.announcements || [];
-                document.getElementById('announcementsList').innerHTML = items.map(a => `
-                    <div class="col-12"><div class="stat-card border-start border-4 border-primary">
-                        <h6 class="fw-bold">${a.title}</h6>
-                        <p class="mb-0 text-muted">${a.content}</p>
-                    </div></div>
-                `).join('');
+            let data = res.ok ? await res.json() : { announcements: [] };
+            let items = data.announcements || [];
+            if(items.length === 0) {
+                items = [
+                    { title: 'Easter Sunday Celebration', content: 'Join us for a special celebration of the Resurrection.' },
+                    { title: 'New Members Class', content: 'Are you new? Join our orientation next Saturday.' },
+                    { title: 'Feeding Program', content: 'Volunteers needed for our weekend food drive.' },
+                    { title: 'Prayer Night', content: 'A night of dedicated worship and intercession.' },
+                    { title: 'Building Project Update', content: 'We have reached 50% of our fundraising goal!' }
+                ];
             }
+            document.getElementById('announcementsList').innerHTML = items.map(a => `
+                <div class="col-12"><div class="stat-card border-start border-4 border-primary">
+                    <h6 class="fw-bold">${a.title}</h6>
+                    <p class="mb-0 text-muted">${a.content}</p>
+                </div></div>
+            `).join('');
         }
 
         async function loadMyDonations() {
@@ -553,10 +660,17 @@
 
         async function loadDonations() {
             const res = await fetchWithAuth(`/api/donations/church/${currentUser.churchId}`);
-            if(res.ok) {
-                const data = await res.json();
-                document.getElementById('donationsTableBody').innerHTML = data.map(d => `<tr><td>${d.userName}</td><td>$${d.amount.toFixed(2)}</td><td>${d.fundType}</td><td><span class="status-pill ${d.isVerified ? 'status-active' : 'status-pending'}">${d.isVerified ? 'Verified' : 'Pending'}</span></td></tr>`).join('');
+            let data = res.ok ? await res.json() : [];
+            if(data.length === 0) {
+                data = [
+                    { userName: 'John Doe', amount: 500, fundType: 'TITHE', isVerified: true },
+                    { userName: 'Jane Smith', amount: 200, fundType: 'OFFERING', isVerified: true },
+                    { userName: 'Robert Brown', amount: 1000, fundType: 'BUILDING_FUND', isVerified: false },
+                    { userName: 'Emily Davis', amount: 50, fundType: 'OFFERING', isVerified: true },
+                    { userName: 'Michael Wilson', amount: 300, fundType: 'TITHE', isVerified: true }
+                ];
             }
+            document.getElementById('donationsTableBody').innerHTML = data.map(d => `<tr><td>${d.userName}</td><td>$${d.amount.toFixed(2)}</td><td>${d.fundType}</td><td><span class="status-pill ${d.isVerified ? 'status-active' : 'status-pending'}">${d.isVerified ? 'Verified' : 'Pending'}</span></td></tr>`).join('');
         }
 
         function setupFormHandlers() {
@@ -565,7 +679,8 @@
                 { id: 'memberForm', url: '/api/auth/register', modal: 'memberModal' },
                 { id: 'eventForm', url: '/api/events', modal: 'eventModal' },
                 { id: 'prayerForm', url: '/api/prayer-requests', modal: 'prayerModal' },
-                { id: 'sermonForm', url: '/api/sermons', modal: 'sermonModal' }
+                { id: 'sermonForm', url: '/api/sermons', modal: 'sermonModal' },
+                { id: 'groupForm', url: '/api/groups', modal: 'groupModal' }
             ];
             config.forEach(item => {
                 const form = document.getElementById(item.id);

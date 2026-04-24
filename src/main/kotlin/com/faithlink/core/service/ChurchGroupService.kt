@@ -11,9 +11,26 @@ import java.util.UUID
 @Transactional
 class ChurchGroupService(
     private val churchGroupRepository: ChurchGroupRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val churchRepository: com.faithlink.core.repository.ChurchRepository
 ) {
     
+    fun createGroupFromDto(dto: com.faithlink.core.dto.ChurchGroupCreateRequest): ChurchGroup {
+        val church = churchRepository.findById(dto.churchId)
+            .orElseThrow { RuntimeException("Church not found") }
+            
+        val leader = dto.leaderId?.let { 
+            userRepository.findById(it).orElse(null) 
+        }
+
+        val group = ChurchGroup(
+            name = dto.name,
+            description = dto.description,
+            leader = leader,
+            church = church
+        )
+        return churchGroupRepository.save(group)
+    }
     fun enrollMember(groupId: UUID, userId: UUID): Boolean {
         val group = churchGroupRepository.findById(groupId).orElse(null) ?: return false
         val user = userRepository.findById(userId).orElse(null) ?: return false
