@@ -7,167 +7,184 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-purple: #764ba2;
+            --secondary-indigo: #667eea;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-gradient);
             min-height: 100vh;
+            margin: 0;
+            font-family: 'Outfit', 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-container {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
         }
-        .hero-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 60px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 600px;
-        }
-        .hero-title {
-            color: #2c3e50;
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero-subtitle {
-            color: #7f8c8d;
-            font-size: 1.2rem;
-            margin-bottom: 40px;
-        }
-        .btn-primary-custom {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin: 10px;
-        }
-        .btn-primary-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
-        .btn-outline-custom {
-            border: 2px solid #667eea;
-            color: #667eea;
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin: 10px;
+        .hero-wrapper {
             background: transparent;
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            min-height: 600px;
         }
-        .btn-outline-custom:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
+        .hero-left {
+            background: white;
+            flex: 1;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
         }
-        .feature-icon {
-            font-size: 3rem;
-            color: #667eea;
-            margin-bottom: 20px;
+        .hero-right {
+            flex: 1.2;
+            background: url('/images/cross_hero.png') no-repeat center center;
+            background-size: cover;
+            position: relative;
+        }
+        .hero-right::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0.1), transparent);
         }
         .status-badge {
-            background: #28a745;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
+            display: none; /* Hiding the 'undefined' badge as requested */
+        }
+        .hero-icon {
+            font-size: 4rem;
+            color: var(--secondary-indigo);
+            margin-bottom: 25px;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .hero-title {
+            color: var(--primary-purple);
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+        .hero-subtitle {
+            color: #718096;
+            font-size: 1.25rem;
+            max-width: 400px;
+            margin-bottom: 45px;
+            line-height: 1.6;
+        }
+        .btn-custom {
+            padding: 14px 35px;
+            border-radius: 15px;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 220px;
+            margin-bottom: 15px;
+            text-decoration: none;
             display: inline-block;
+        }
+        .btn-login {
+            background: var(--bg-gradient);
+            color: white;
+            border: none;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .btn-login:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        .btn-learn {
+            background: white;
+            color: var(--secondary-indigo);
+            border: 2px solid var(--secondary-indigo);
+        }
+        .btn-learn:hover {
+            background: var(--secondary-indigo);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        footer {
+            background: rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px 0;
+            color: white;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .footer-link {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+        .footer-link:hover { color: white; }
+
+        @media (max-width: 992px) {
+            .hero-wrapper { flex-direction: column; }
+            .hero-right { min-height: 300px; }
+            .hero-left { padding: 40px 20px; }
         }
     </style>
 </head>
 <body>
-    <div class="hero-section">
-        <div class="status-badge">
-            <i class="fas fa-circle"></i> System Online
-        </div>
-        
-        <div class="feature-icon">
-            <i class="fas fa-church"></i>
-        </div>
-        
-        <h1 class="hero-title">FaithLink Core</h1>
-        <p class="hero-subtitle">Church Management System - Connecting Faith Communities</p>
-        
-        <div class="mt-4">
-            <a href="/login" class="btn btn-primary-custom text-decoration-none">
-                <i class="fas fa-sign-in-alt me-2"></i> Login to System
-            </a>
-            <a href="#features" class="btn btn-outline-custom text-decoration-none" onclick="showFeatures()">
-                <i class="fas fa-info-circle me-2"></i> Learn More
-            </a>
-        </div>
-        
-        <div id="features" class="mt-5" style="display: none;">
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <i class="fas fa-layer-group feature-icon" style="font-size: 2rem;"></i>
-                    <h6>Church Groups</h6>
-                    <p class="text-muted small">Manage cell groups and ministries</p>
+    <div class="main-container">
+        <div class="hero-wrapper">
+            <div class="hero-left">
+                <div class="hero-icon">
+                    <i class="fas fa-church"></i>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <i class="fas fa-hands-praying feature-icon" style="font-size: 2rem;"></i>
-                    <h6>Prayer Wall</h6>
-                    <p class="text-muted small">Connect with your community in prayer</p>
+                <h1 class="hero-title">FaithLink Core</h1>
+                <p class="hero-subtitle">Church Management System - Connecting Faith Communities through modern technology.</p>
+                
+                <div class="d-flex flex-column align-items-center">
+                    <a href="/login" class="btn-custom btn-login">
+                        <i class="fas fa-sign-in-alt me-2"></i> Login to System
+                    </a>
+                    <a href="#" class="btn-custom btn-learn" onclick="toggleFeatures()">
+                        <i class="fas fa-info-circle me-2"></i> Learn More
+                    </a>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <i class="fas fa-microphone-alt feature-icon" style="font-size: 2rem;"></i>
-                    <h6>Sermon Archive</h6>
-                    <p class="text-muted small">Access spiritual digital content</p>
+
+                <div id="features" class="mt-4 text-start" style="display: none; width: 100%; max-width: 400px;">
+                    <div class="small text-muted border-top pt-3">
+                        <p><i class="fas fa-check text-success me-2"></i> Member & Group Management</p>
+                        <p><i class="fas fa-check text-success me-2"></i> Donation Tracking</p>
+                        <p><i class="fas fa-check text-success me-2"></i> Event Scheduling</p>
+                    </div>
                 </div>
             </div>
-            <div class="mt-3 p-3 bg-light rounded shadow-sm">
-                <p class="small text-muted mb-0"><i class="fas fa-shield-halved me-2 text-primary"></i>Powered by UUID Architecture for Offline-First Sync</p>
-            </div>
+            <div class="hero-right"></div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function showFeatures() {
-            const features = document.getElementById('features');
-            features.style.display = features.style.display === 'none' ? 'block' : 'none';
-        }
-        
-        // Check API status on page load
-        window.onload = function() {
-            fetch('/public/health')
-                .then(response => response.json())
-                .then(data => {
-                    console.log('API Status:', data);
-                    const badge = document.querySelector('.status-badge');
-                    badge.innerHTML = '<i class="fas fa-circle"></i> ' + data.message;
-                    badge.style.background = '#28a745';
-                })
-                .catch(error => {
-                    console.error('API Error:', error);
-                    const badge = document.querySelector('.status-badge');
-                    badge.innerHTML = '<i class="fas fa-circle"></i> System Offline';
-                    badge.style.background = '#dc3545';
-                });
-        }
-    </script>
-    <!-- FOOTER -->
-    <footer class="mt-5 py-4 w-100 text-center" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); position: relative; bottom: 0; color: white;">
+    <footer>
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-md-6 text-md-start mb-3 mb-md-0">
-                    <h5 class="fw-bold mb-1"><i class="fas fa-church me-2"></i>FaithLink Core</h5>
-                    <p class="small mb-0 opacity-75">Empowering spiritual communities through digital connection.</p>
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <h6 class="fw-bold mb-1"><i class="fas fa-church me-2"></i>FaithLink Core</h6>
+                    <p class="small mb-0 opacity-75">Empowering spiritual communities digitally.</p>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <div class="d-flex justify-content-md-end justify-content-center gap-4 mb-2">
-                        <a href="#" class="text-white text-decoration-none small opacity-75 hover-opacity-100">About</a>
-                        <a href="#" class="text-white text-decoration-none small opacity-75 hover-opacity-100">Privacy</a>
-                        <a href="#" class="text-white text-decoration-none small opacity-75 hover-opacity-100">Contact</a>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="d-flex justify-content-center justify-content-md-end gap-3 mb-2">
+                        <a href="#" class="footer-link">About</a>
+                        <a href="#" class="footer-link">Privacy</a>
+                        <a href="#" class="footer-link">Contact</a>
                     </div>
                     <p class="small mb-0 opacity-50">&copy; 2026 FaithLink Core. All rights reserved.</p>
                 </div>
@@ -175,8 +192,11 @@
         </div>
     </footer>
 
-    <style>
-        .hover-opacity-100:hover { opacity: 1 !important; }
-    </style>
+    <script>
+        function toggleFeatures() {
+            const f = document.getElementById('features');
+            f.style.display = f.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
 </body>
 </html>
