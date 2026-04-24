@@ -681,9 +681,8 @@
         }
 
         async function loadAnnouncements() {
-            const res = await fetchWithAuth(`/api/sync/bootstrap/${currentUser.churchId}`);
-            let data = res.ok ? await res.json() : { announcements: [] };
-            let items = data.announcements || [];
+            const res = await fetchWithAuth(`/api/announcements/church/${currentUser.churchId}`);
+            let items = res.ok ? await res.json() : [];
             if(items.length === 0) {
                 items = [
                     { title: 'Easter Sunday Celebration', content: 'Join us for a special celebration of the Resurrection.' },
