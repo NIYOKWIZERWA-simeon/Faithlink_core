@@ -12,7 +12,8 @@ import java.util.UUID
 class ChurchGroupService(
     private val churchGroupRepository: ChurchGroupRepository,
     private val userRepository: UserRepository,
-    private val churchRepository: com.faithlink.core.repository.ChurchRepository
+    private val churchRepository: com.faithlink.core.repository.ChurchRepository,
+    private val userGroupRepository: com.faithlink.core.repository.UserGroupRepository
 ) {
     
     fun createGroupFromDto(dto: com.faithlink.core.dto.ChurchGroupCreateRequest): ChurchGroup {
@@ -31,12 +32,19 @@ class ChurchGroupService(
         )
         return churchGroupRepository.save(group)
     }
+
     fun enrollMember(groupId: UUID, userId: UUID): Boolean {
+        if (userGroupRepository.existsByUserIdAndGroupId(userId, groupId)) return false
+        
         val group = churchGroupRepository.findById(groupId).orElse(null) ?: return false
         val user = userRepository.findById(userId).orElse(null) ?: return false
         
-        group.members.add(user)
-        churchGroupRepository.save(group)
+        val userGroup = com.faithlink.core.entity.UserGroup(
+            user = user,
+            group = group,
+            status = "ACTIVE"
+        )
+        userGroupRepository.save(userGroup)
         return true
     }
 

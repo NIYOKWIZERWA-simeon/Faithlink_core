@@ -22,6 +22,6 @@ data class UserGroup(
     @Column(nullable = false, length = 20)
     var status: String = "ACTIVE", // e.g., ACTIVE, PENDING, INACTIVE
     
-    @Column(name = "join_date", nullable = false)
-    val joinDate: LocalDateTime = LocalDateTime.now()
+    @Column(name = "joined_at", nullable = false)
+    val joinedAt: LocalDateTime = LocalDateTime.now()
 )

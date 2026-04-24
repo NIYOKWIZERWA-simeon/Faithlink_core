@@ -32,15 +32,7 @@ data class ChurchGroup(
     val createdAt: LocalDateTime = LocalDateTime.now(),
     
     @Column(name = "updated_at", nullable = false)
-    var updatedAt: LocalDateTime = LocalDateTime.now(),
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "user_groups",
-        joinColumns = [JoinColumn(name = "group_id")],
-        inverseJoinColumns = [JoinColumn(name = "user_id")]
-    )
-    var members: MutableSet<User> = mutableSetOf()
+    var updatedAt: LocalDateTime = LocalDateTime.now()
 ) {
     @PreUpdate
     fun onPreUpdate() {
