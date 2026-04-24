@@ -171,6 +171,21 @@
 
         <!-- SECTION: DASHBOARD -->
         <div id="dashboardSection" class="content-section active">
+            <!-- Hero Banner -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="stat-card p-0 overflow-hidden" style="position: relative; height: 220px; border-radius: 20px;">
+                        <img src="/images/church_banner.png" alt="Church Banner" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(102, 126, 234, 0.8), rgba(0,0,0,0.2)); display: flex; align-items: center; padding: 40px;">
+                            <div class="text-white">
+                                <h2 class="fw-bold mb-2">Welcome to FaithLink Dashboard</h2>
+                                <p class="mb-0 opacity-75">Connect, Grow, and Serve together in Faith.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row g-4 mb-5">
                 <div class="col-md-3 admin-only pastor-only">
                     <div class="stat-card text-center">
@@ -292,7 +307,10 @@
         </div>
 
         <div id="announcementsSection" class="content-section">
-            <h4 class="fw-bold mb-4">Church Bulletins</h4>
+            <div class="d-flex justify-content-between mb-4">
+                <h4 class="fw-bold">Church Bulletins</h4>
+                <button class="btn btn-premium admin-only" data-bs-toggle="modal" data-bs-target="#announcementModal">Add Bulletin</button>
+            </div>
             <div class="row g-4" id="announcementsList"></div>
         </div>
 
@@ -360,6 +378,8 @@
     <div class="modal fade" id="prayerReplyModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form id="prayerReplyForm"><div class="modal-body"><h5>Respond to Prayer</h5><input type="hidden" id="replyRequestId"><p id="replyRequestText" class="small text-muted"></p><textarea id="replyContent" class="form-control" rows="4" placeholder="Your words of grace..." required></textarea></div><div class="modal-footer"><button type="submit" class="btn btn-premium w-100">Send Response</button></div></form></div></div></div>
     
     <div class="modal fade" id="groupModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form id="groupForm"><div class="modal-body"><h5>Create New Church Group</h5><input type="text" name="name" class="form-control mb-2" placeholder="Group Name" required><textarea name="description" class="form-control mb-2" placeholder="Group Description" rows="3"></textarea></div><div class="modal-footer"><button type="submit" class="btn btn-premium w-100">Create Group</button></div></form></div></div></div>
+
+    <div class="modal fade" id="announcementModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><form id="announcementForm"><div class="modal-body"><h5>Create New Bulletin</h5><label class="small text-muted">Title</label><input type="text" name="title" class="form-control mb-3" placeholder="Announcement Title" required><label class="small text-muted">Content</label><textarea name="content" class="form-control mb-3" placeholder="Write the announcement details here..." rows="4" required></textarea><label class="small text-muted">Expiry Date (Optional)</label><input type="datetime-local" name="expiresAt" class="form-control"></div><div class="modal-footer"><button type="submit" class="btn btn-premium w-100">Publish Bulletin</button></div></form></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -680,7 +700,8 @@
                 { id: 'eventForm', url: '/api/events', modal: 'eventModal' },
                 { id: 'prayerForm', url: '/api/prayer-requests', modal: 'prayerModal' },
                 { id: 'sermonForm', url: '/api/sermons', modal: 'sermonModal' },
-                { id: 'groupForm', url: '/api/groups', modal: 'groupModal' }
+                { id: 'groupForm', url: '/api/groups', modal: 'groupModal' },
+                { id: 'announcementForm', url: '/api/announcements', modal: 'announcementModal' }
             ];
             config.forEach(item => {
                 const form = document.getElementById(item.id);
