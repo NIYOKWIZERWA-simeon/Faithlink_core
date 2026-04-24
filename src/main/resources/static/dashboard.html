@@ -712,13 +712,28 @@
                     data.churchId = currentUser.churchId;
                     if(item.id === 'donationForm' || item.id === 'prayerForm') data.userId = currentUser.id;
                     
-                    const res = await fetchWithAuth(item.url, { method: 'POST', body: JSON.stringify(data) });
-                    if(res.ok) {
-                        alert('Submitted successfully!');
-                        bootstrap.Modal.getInstance(document.getElementById(item.modal)).hide();
-                        form.reset();
-                        loadDashboardStats();
-                        showSection(document.querySelector('.sidebar-item.active').getAttribute('onclick').match(/'([^']+)'/)[1]);
+                    try {
+                        const res = await fetchWithAuth(item.url, { method: 'POST', body: JSON.stringify(data) });
+                        if(res.ok) {
+                            alert('Submitted successfully!');
+                            bootstrap.Modal.getInstance(document.getElementById(item.modal)).hide();
+                            form.reset();
+                            loadDashboardStats();
+                            const activeTab = document.querySelector('.sidebar-item.active');
+                            if(activeTab) {
+                                const clickAttr = activeTab.getAttribute('onclick');
+                                if(clickAttr) {
+                                    const sectionId = clickAttr.match(/'([^']+)'/)[1];
+                                    showSection(sectionId);
+                                }
+                            }
+                        } else {
+                            const errorData = await res.json().catch(() => ({}));
+                            alert('Error: ' + (errorData.message || 'Submission failed. Please check your data and try again.'));
+                        }
+                    } catch (err) {
+                        console.error('Submission error:', err);
+                        alert('Network error. Please ensure the server is running.');
                     }
                 };
             });
