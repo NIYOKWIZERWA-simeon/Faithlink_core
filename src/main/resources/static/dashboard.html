@@ -121,8 +121,8 @@
         <div class="sidebar-menu">
             <div class="sidebar-item" onclick="showSection('dashboard')"><i class="fas fa-chart-pie"></i> Overview</div>
             <div class="sidebar-item admin-only pastor-only" id="navMembers" onclick="showSection('members')"><i class="fas fa-users"></i> Members</div>
-            <div class="sidebar-item admin-only pastor-only" id="navEvents" onclick="showSection('events')"><i class="fas fa-calendar-alt"></i> Events</div>
-            <div class="sidebar-item admin-only pastor-only" id="navGroups" onclick="showSection('groups')"><i class="fas fa-layer-group"></i> Groups</div>
+            <div class="sidebar-item admin-only pastor-only treasurer-only" id="navEvents" onclick="showSection('events')"><i class="fas fa-calendar-alt"></i> Events</div>
+            <div class="sidebar-item admin-only pastor-only treasurer-only" id="navGroups" onclick="showSection('groups')"><i class="fas fa-layer-group"></i> Groups</div>
             <div class="sidebar-item pastor-only admin-only member-only" id="navSermons" onclick="showSection('sermons')"><i class="fas fa-microphone"></i> Sermons</div>
             <div class="sidebar-item pastor-only admin-only member-only" id="navPrayers" onclick="showSection('prayers')"><i class="fas fa-hands-praying"></i> Prayer Requests</div>
             <div class="sidebar-item admin-only treasurer-only pastor-only" id="navDonations" onclick="showSection('donations')"><i class="fas fa-donate"></i> Finance</div>
@@ -427,15 +427,6 @@
                 document.querySelectorAll('.member-only').forEach(el => el.classList.remove('d-none'));
             }
 
-            // Special Treasurer Mode: If ONLY treasurer, show minimal sidebar
-            if (isTreasurer && !isAdmin && !isPastor) {
-                document.querySelectorAll('.sidebar-item').forEach(el => {
-                    if (!el.getAttribute('onclick').includes('dashboard') && !el.getAttribute('onclick').includes('donations')) {
-                        el.classList.add('d-none');
-                    }
-                });
-            }
-
             // Forced Global Visibility for Events & Sermons
             loadEvents();
             loadSermons();
@@ -621,9 +612,9 @@
             let data = res.ok ? await res.json() : [];
             if(data.length === 0) {
                 data = [
-                    { subject: 'Health Recovery', content: 'Praying for a quick recovery from surgery.', status: 'PRAYED', response: 'We are praying for your strength.' },
+                    { subject: 'Health Recovery', content: 'Praying for a quick recovery from surgery.', status: 'PENDING', response: 'We are praying for your strength.' },
                     { subject: 'Financial Breakthrough', content: 'Seeking God\'s guidance in job search.', status: 'PENDING' },
-                    { subject: 'Family Restoration', content: 'Praying for peace within the family.', status: 'PRAYED', response: 'Trust in the Lord.' },
+                    { subject: 'Family Restoration', content: 'Praying for peace within the family.', status: 'PENDING', response: 'Trust in the Lord.' },
                     { subject: 'New Home Blessing', content: 'Thanking God for a new place to stay.', status: 'PENDING' },
                     { subject: 'Traveling Mercies', content: 'Praying for safety during the mission trip.', status: 'PENDING' }
                 ];
@@ -724,11 +715,11 @@
             let data = res.ok ? await res.json() : [];
             if(data.length === 0) {
                 data = [
-                    { userName: 'John Doe', amount: 500, fundType: 'TITHE', paymentMethod: 'CASH', donationDate: new Date(), isVerified: true },
-                    { userName: 'Jane Smith', amount: 200, fundType: 'OFFERING', paymentMethod: 'MOBILE_MONEY', donationDate: new Date(), isVerified: true },
+                    { userName: 'John Doe', amount: 500, fundType: 'TITHE', paymentMethod: 'CASH', donationDate: new Date(), isVerified: false },
+                    { userName: 'Jane Smith', amount: 200, fundType: 'OFFERING', paymentMethod: 'MOBILE_MONEY', donationDate: new Date(), isVerified: false },
                     { userName: 'Robert Brown', amount: 1000, fundType: 'BUILDING_FUND', paymentMethod: 'BANK_TRANSFER', donationDate: new Date(), isVerified: false },
-                    { userName: 'Emily Davis', amount: 50, fundType: 'OFFERING', paymentMethod: 'CASH', donationDate: new Date(), isVerified: true },
-                    { userName: 'Michael Wilson', amount: 300, fundType: 'TITHE', paymentMethod: 'MOBILE_MONEY', donationDate: new Date(), isVerified: true }
+                    { userName: 'Emily Davis', amount: 50, fundType: 'OFFERING', paymentMethod: 'CASH', donationDate: new Date(), isVerified: false },
+                    { userName: 'Michael Wilson', amount: 300, fundType: 'TITHE', paymentMethod: 'MOBILE_MONEY', donationDate: new Date(), isVerified: false }
                 ];
             }
             window.lastDonations = data; // For export

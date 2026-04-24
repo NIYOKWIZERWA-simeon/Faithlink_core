@@ -117,6 +117,8 @@ CREATE TABLE events (
     start_time DATETIME NOT NULL,
     end_time DATETIME NOT NULL,
     church_id BINARY(16) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_evt_church FOREIGN KEY (church_id) REFERENCES churches(id) ON DELETE CASCADE
 );
 
@@ -137,12 +139,13 @@ CREATE TABLE prayer_requests (
 CREATE TABLE sermons (
     id BINARY(16) PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
-    preacher VARCHAR(100) NOT NULL,
-    date DATE NOT NULL,
+    preacher_name VARCHAR(100) NOT NULL,
+    sermon_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     content TEXT,
     video_url VARCHAR(500),
     audio_url VARCHAR(500),
     church_id BINARY(16) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_sermon_church FOREIGN KEY (church_id) REFERENCES churches(id) ON DELETE CASCADE
 );
 

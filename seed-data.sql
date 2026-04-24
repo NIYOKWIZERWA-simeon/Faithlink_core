@@ -61,12 +61,12 @@ INSERT INTO church_groups (id, name, description, leader_id, church_id) VALUES
 (UNHEX(REPLACE(UUID(), '-', '')), 'Hospitality Committee', 'Welcoming newcomers', @user3, @church_id);
 
 -- ── 7. Create Sermons (5 Sermons) ───────────────────────────
-INSERT INTO sermons (id, title, preacher, date, content, church_id) VALUES 
-(UNHEX(REPLACE(UUID(), '-', '')), 'The Walk of Faith', 'Pastor Jean', '2026-04-19', 'A sermon about trusting God in difficult times.', @church_id),
-(UNHEX(REPLACE(UUID(), '-', '')), 'Living by Grace', 'Evangelist Paul', '2026-04-12', 'Exploring the unmerited favor of God.', @church_id),
-(UNHEX(REPLACE(UUID(), '-', '')), 'The Power of Prayer', 'Pastor Jean', '2026-04-05', 'How prayer changes things and us.', @church_id),
-(UNHEX(REPLACE(UUID(), '-', '')), 'Fruit of the Spirit', 'Sister Marie', '2026-03-29', 'Developing character through the Holy Spirit.', @church_id),
-(UNHEX(REPLACE(UUID(), '-', '')), 'The Great Commission', 'Pastor Jean', '2026-03-22', 'Our call to reach the world for Christ.', @church_id);
+INSERT INTO sermons (id, title, preacher_name, sermon_date, content, church_id) VALUES 
+(UNHEX(REPLACE(UUID(), '-', '')), 'The Walk of Faith', 'Pastor Jean', '2026-04-19 09:00:00', 'A sermon about trusting God in difficult times.', @church_id),
+(UNHEX(REPLACE(UUID(), '-', '')), 'Living by Grace', 'Evangelist Paul', '2026-04-12 10:30:00', 'Exploring the unmerited favor of God.', @church_id),
+(UNHEX(REPLACE(UUID(), '-', '')), 'The Power of Prayer', 'Pastor Jean', '2026-04-05 11:00:00', 'How prayer changes things and us.', @church_id),
+(UNHEX(REPLACE(UUID(), '-', '')), 'Fruit of the Spirit', 'Sister Marie', '2026-03-29 09:15:00', 'Developing character through the Holy Spirit.', @church_id),
+(UNHEX(REPLACE(UUID(), '-', '')), 'The Great Commission', 'Pastor Jean', '2026-03-22 10:00:00', 'Our call to reach the world for Christ.', @church_id);
 
 -- ── 8. Create Donations (5 Donations) ────────────────────────
 INSERT INTO donations (id, user_id, amount, fund_type, payment_method, church_id, is_verified) VALUES 
